@@ -17,15 +17,15 @@
     <v-simple-table density="comfortable">
       <thead>
       <tr>
-        <th>Задания</th>
-        <th>Задачи</th>
+        <th class="text-h6">Задания</th>
+        <th class="text-h6">Задачи</th>
       </tr>
       </thead>
       <tbody>
       <tr v-for="(task, index) in taskList" :key="index">
         <td>{{ task.title }}</td>
         <td>
-          <div v-for="(item, item_index) in task.items" :key="item_index">{{ item }}</div>
+          <div v-for="(item, item_index) in task.items" :key="item_index" class="my-2">{{ item }}</div>
         </td>
       </tr>
       </tbody>
@@ -58,5 +58,7 @@ export default {
 </script>
 
 <style scoped>
-
+  th {
+    font-size: 1.2em
+  }
 </style>
