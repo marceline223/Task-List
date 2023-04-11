@@ -46,7 +46,7 @@
       </tr>
       </thead>
       <tbody>
-      <tr v-for="(task, index) in taskList" :key="index" @click="onClickTask(index)" ref="dropdown">
+      <tr v-for="(task, index) in taskList" :key="index" @click="onClickTask(index)">
         <td>{{ task.title }}</td>
         <td>
           <div v-for="(item, item_index) in task.items" :key="item_index" class="my-2">{{ item }}</div>
