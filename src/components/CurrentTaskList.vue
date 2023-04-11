@@ -10,7 +10,7 @@
         >
           <v-icon class="black--text">mdi-plus-circle-outline</v-icon>
           <v-dialog v-model="showAddDialog" width="75%">
-            <add-task @closeAddDialog="onClickCloseDialog('add')"></add-task>
+            <add-task @closeAddDialog="onClickCloseDialog('add')" @addTask = "onClickAddTask"></add-task>
           </v-dialog>
         </v-btn>
         <v-btn icon
@@ -20,9 +20,9 @@
         >
           <v-icon>mdi-pencil</v-icon>
           <v-dialog v-model="showEditDialog" width="75%">
-            <edit-task :title="taskList[chosenTask].title"
-                       :description="taskList[chosenTask].description"
-                       :item-list="taskList[chosenTask].items"
+            <edit-task :title="taskProp.title"
+                       :description="taskProp.description"
+                       :item-list="taskProp.items"
                        @closeEditDialog="onClickCloseDialog('edit')"
                        @saveChanges="onClickSaveChanges(chosenTask, $event)"
             >
@@ -90,9 +90,22 @@ export default {
           description: '123123123'
         }
       ],
-      chosenTask: 0,
+      chosenTask: -1,
       showAddDialog: false,
       showEditDialog: false
+    }
+  },
+  computed: {
+    taskProp() {
+      if (this.taskList.length === 0 || this.chosenTask === -1) {
+        return {
+          title: 'Not found',
+          items: [],
+          description: 'Not found'
+        }
+      } else {
+        return this.taskList[this.chosenTask]
+      }
     }
   },
   methods: {
@@ -105,8 +118,7 @@ export default {
     onClickCloseDialog(type) {
       if (type === 'add') {
         this.showAddDialog = false;
-      }
-      else if (type === 'edit') {
+      } else if (type === 'edit') {
         this.showEditDialog = false;
       }
     },
@@ -115,6 +127,14 @@ export default {
       this.taskList[index].description = data.description;
       this.taskList[index].items = data.itemList;
       this.showEditDialog = false;
+    },
+    onClickAddTask(data) {
+      this.taskList.push({
+        title: data.title,
+        items: data.itemList,
+        description: data.description
+      });
+      this.showAddDialog = false;
     }
   }
 }

@@ -14,11 +14,11 @@
       </v-container>
       <v-container>
         <label>Название:</label>
-        <input type="text">
+        <input type="text" @input="onInput('title', $event)">
       </v-container>
       <v-container>
         <label>Описание:</label>
-        <input type="text">
+        <input type="text" @input="onInput('description', $event)">
       </v-container>
       <v-btn @click="onClickAddButton" class="ma-3">Добавить</v-btn>
     </v-card>
@@ -48,6 +48,13 @@ export default {
       this.description = '';
       this.itemList = [];
       this.$emit('closeAddDialog');
+    },
+    onInput(type, e){
+      if (type === 'title') {
+        this.title = e.target.value;
+      } else if (type === 'description') {
+        this.description = e.target.value;
+      }
     }
   }
 }

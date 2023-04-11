@@ -46,7 +46,6 @@ export default {
   },
   methods: {
     onClickSaveButton(e) {
-      console.log(this.newTitle);
       this.$emit('saveChanges', {
         title: this.newTitle,
         description: this.newDescription,
