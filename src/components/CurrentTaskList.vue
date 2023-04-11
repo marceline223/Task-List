@@ -9,15 +9,8 @@
             @click="showAddDialog = true"
         >
           <v-icon class="black--text">mdi-plus-circle-outline</v-icon>
-          <v-dialog v-model="showAddDialog">
-              <v-card>
-                <v-card-title>Добавление</v-card-title>
-                <v-btn class="ma-5"
-                       @click="showAddDialog = false"
-                >
-                  Закрыть
-                </v-btn>
-              </v-card>
+          <v-dialog v-model="showAddDialog" width="75%">
+            <add-task @closeAddDialog="onClickCloseDialog('add')"></add-task>
           </v-dialog>
         </v-btn>
         <v-btn icon
@@ -26,15 +19,14 @@
                @click="showEditDialog = true"
         >
           <v-icon>mdi-pencil</v-icon>
-          <v-dialog v-model="showEditDialog">
-            <v-card>
-              <v-card-title>Редактирование задания {{chosenTask + 1}}</v-card-title>
-              <v-btn class="ma-5"
-                     @click="showEditDialog = false"
-              >
-                Закрыть
-              </v-btn>
-            </v-card>
+          <v-dialog v-model="showEditDialog" width="75%">
+            <edit-task :title="taskList[chosenTask].title"
+                       :description="taskList[chosenTask].description"
+                       :item-list="taskList[chosenTask].items"
+                       @closeEditDialog="onClickCloseDialog('edit')"
+                       @saveChanges="onClickSaveChanges(chosenTask, $event)"
+            >
+            </edit-task>
           </v-dialog>
         </v-btn>
         <v-btn icon
@@ -62,34 +54,43 @@
       </tr>
       </tbody>
     </v-simple-table>
-    Index of chosen task: {{ chosenTask }}
   </div>
 </template>
 
 <script>
+import AddTask from "@/components/AddTask";
+import EditTask from "@/components/EditTask";
+
 export default {
   name: "CurrentTaskList",
+  components: {
+    AddTask, EditTask
+  },
   data() {
     return {
       taskList: [
         {
           title: 'Задание 1',
-          items: ['Задача 1.1', 'Задача 1.2', 'Задача 1.3', 'Задача 1.4', 'Задача 1.5', 'Задача 1.6']
+          items: ['Задача 1.1', 'Задача 1.2', 'Задача 1.3', 'Задача 1.4', 'Задача 1.5', 'Задача 1.6'],
+          description: 'Ляляляляля'
         },
         {
           title: 'Задание 2',
-          items: ['Задача 2.1', 'Задача 2.2', 'Задача 2.3']
+          items: ['Задача 2.1', 'Задача 2.2', 'Задача 2.3'],
+          description: 'Траляляляляля'
         },
         {
           title: 'Задание 3',
-          items: ['Задача 3.1']
+          items: ['Задача 3.1'],
+          description: ''
         },
         {
           title: 'Задание 4',
-          items: ['Задача 4.1', 'Задача 4.2']
+          items: ['Задача 4.1', 'Задача 4.2'],
+          description: '123123123'
         }
       ],
-      chosenTask: -1,
+      chosenTask: 0,
       showAddDialog: false,
       showEditDialog: false
     }
@@ -100,6 +101,20 @@ export default {
     },
     onClickTask(index) {
       this.chosenTask = index;
+    },
+    onClickCloseDialog(type) {
+      if (type === 'add') {
+        this.showAddDialog = false;
+      }
+      else if (type === 'edit') {
+        this.showEditDialog = false;
+      }
+    },
+    onClickSaveChanges(index, data) {
+      this.taskList[index].title = data.title;
+      this.taskList[index].description = data.description;
+      this.taskList[index].items = data.itemList;
+      this.showEditDialog = false;
     }
   }
 }
