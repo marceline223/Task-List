@@ -36,11 +36,12 @@ export default Vue.extend({
     }
   }
 });
+
 </script>
 
 <style>
 .v-main-container {
-  width: 85%;
+  width: 75%;
   margin: auto;
 }
 </style>
