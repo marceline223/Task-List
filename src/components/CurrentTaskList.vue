@@ -1,7 +1,7 @@
 <template>
   <div>
     <h2 class="mt-4">Список заданий</h2>
-    <v-container fluid>
+    <v-container>
       <v-row>
         <v-btn
             class="mr-4"
