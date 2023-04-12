@@ -37,7 +37,7 @@
         </v-btn>
       </v-row>
     </v-container>
-    <v-simple-table density="comfortable">
+    <v-simple-table >
       <thead>
       <tr>
         <th class="text-h6 black--text">Задания</th>
@@ -48,11 +48,25 @@
       <tr v-for="(task, index) in taskList" :key="index" @click="onClickTask(index)" :class="rowStyle(index)">
         <td>{{ task.title }}</td>
         <td>
-          <div v-for="(item, item_index) in task.items" :key="item_index" class="my-2">{{ item }}</div>
+              <v-container
+                           v-for="(item, item_index) in task.items"
+                           :key="item_index"
+              >
+                <v-row>
+                  <v-simple-checkbox v-model="item.itemStatus"
+                                     color="black"
+                  ></v-simple-checkbox>
+                  {{ item.itemTitle }}
+                </v-row>
+              </v-container>
         </td>
       </tr>
       </tbody>
     </v-simple-table>
+
+<!--    <v-data-table>-->
+
+<!--    </v-data-table>-->
   </div>
 </template>
 
@@ -67,6 +81,7 @@ export default {
   },
   data() {
     return {
+      headers:['Задания', 'Задачи'],
       taskList: [
         {
           title: 'Задание 1',
@@ -178,7 +193,7 @@ export default {
     },
     rowStyle(index) {
       if (index === this.chosenTaskIndex) {
-        return 'bg-red'
+        return 'grey lighten-1'
       } else {
         return ''
       }
