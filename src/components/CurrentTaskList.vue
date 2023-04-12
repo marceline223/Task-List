@@ -58,7 +58,7 @@
                                      color="black"
 
                   ></v-simple-checkbox>
-                  <div class="my-1">{{ item.itemTitle }}</div>
+                  <div class="my-1 ml-2">{{ item.itemTitle }}</div>
                 </v-row>
               </v-container>
         </td>
