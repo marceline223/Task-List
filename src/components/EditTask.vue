@@ -130,8 +130,6 @@ export default {
       })
     },
     onClickCloseDialog() {
-      this.newTitle = '';
-      this.newItemList = [];
       this.$emit('closeEditDialog');
     },
     onClickDeleteItemButton(index) {
