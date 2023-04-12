@@ -6,19 +6,11 @@
         <v-btn
             class="mr-4"
             icon
-            @click="showAddDialog = true"
+            @click="onClickAddTask"
         >
           <v-icon size="35">
             mdi-plus-circle-outline
           </v-icon>
-          <v-dialog v-model="showAddDialog"
-                    width="75%"
-          >
-            <add-task @closeAddDialog="onClickCloseDialog('add')"
-                      @addTask="onClickAddTask"
-            >
-            </add-task>
-          </v-dialog>
         </v-btn>
         <v-btn icon
                class="mr-4"
@@ -87,13 +79,12 @@
 </template>
 
 <script>
-import AddTask from "@/components/AddTask";
 import EditTask from "@/components/EditTask";
 
 export default {
   name: "CurrentTaskList",
   components: {
-    AddTask, EditTask
+    EditTask
   },
   data() {
     return {
@@ -205,12 +196,11 @@ export default {
       this.taskList[index].itemList = data.itemList;
       this.showEditDialog = false;
     },
-    onClickAddTask(data) {
+    onClickAddTask() {
       this.taskList.push({
-        title: data.title,
-        itemList: data.itemList,
+        title: '',
+        itemList: [],
       });
-      this.showAddDialog = false;
     },
     rowStyle(index) {
       if (index === this.chosenTaskIndex) {

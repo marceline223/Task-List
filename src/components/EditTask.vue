@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-card>
-      <v-container fluid>
+      <v-container>
         <v-row justify="space-between" align="start">
           <v-card-title>Редактирование задания</v-card-title>
           <v-btn icon
