@@ -17,12 +17,6 @@
         <input type="text" :value="title"
                @input="onInput('title', $event)">
       </v-container>
-      <v-container>
-        <label>Описание:</label>
-        <input type="text"
-               :value="description"
-               @input = "onInput('description', $event)">
-      </v-container>
       <v-btn @click="onClickCloseDialog" class="ma-3">Сбросить</v-btn>
       <v-btn @click="onClickSaveButton" class="ma-3">Сохранить изменения</v-btn>
     </v-card>
@@ -34,13 +28,11 @@ export default {
   name: "EditTask",
   props: {
     title: String,
-    description: String,
     itemList: Array
   },
   data() {
     return {
       newTitle: this.title,
-      newDescription: this.description,
       newItemList: this.itemList
     }
   },
@@ -48,21 +40,17 @@ export default {
     onClickSaveButton(e) {
       this.$emit('saveChanges', {
         title: this.newTitle,
-        description: this.newDescription,
         itemList: this.newItemList
       })
     },
     onClickCloseDialog(e) {
       this.newTitle = '';
-      this.newDescription = '';
       this.newItemList = [];
       this.$emit('closeEditDialog');
     },
     onInput(type, e) {
       if (type === 'title') {
         this.newTitle = e.target.value;
-      } else if (type === 'description') {
-        this.newDescription = e.target.value;
       }
     }
   }
