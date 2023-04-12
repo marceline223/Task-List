@@ -46,7 +46,7 @@
       </thead>
       <tbody>
       <tr v-for="(task, index) in taskList" :key="index" @click="onClickTask(index)" :class="rowStyle(index)">
-        <td>{{ task.title }}</td>
+        <td class="font-weight-bold text-subtitle-1">{{ task.title }}</td>
         <td>
               <v-container
                            v-for="(item, item_index) in task.items"
@@ -59,7 +59,6 @@
 
                   ></v-simple-checkbox>
                   <div class="my-1">{{ item.itemTitle }}</div>
-
                 </v-row>
               </v-container>
         </td>
