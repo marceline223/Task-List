@@ -8,36 +8,51 @@
             icon
             @click="showAddDialog = true"
         >
-          <v-icon class="black--text">mdi-plus-circle-outline</v-icon>
-          <v-dialog v-model="showAddDialog" width="75%">
-            <add-task @closeAddDialog="onClickCloseDialog('add')" @addTask = "onClickAddTask"></add-task>
+          <v-icon size="35">
+            mdi-plus-circle-outline
+          </v-icon>
+          <v-dialog v-model="showAddDialog"
+                    width="75%"
+          >
+            <add-task @closeAddDialog="onClickCloseDialog('add')"
+                      @addTask="onClickAddTask"
+            >
+            </add-task>
           </v-dialog>
         </v-btn>
         <v-btn icon
-               class="mr-4 black--text"
+               class="mr-4"
                :disabled="chosenTaskIndex === -1"
                @click="showEditDialog = true"
         >
-          <v-icon>mdi-pencil</v-icon>
-          <v-dialog v-model="showEditDialog" width="75%">
+          <v-icon
+              size="35"
+          >
+            mdi-pencil
+          </v-icon>
+          <v-dialog v-model="showEditDialog"
+                    width="75%"
+          >
             <edit-task :title="taskProp.title"
-                       :item-list="taskProp.items"
+                       :itemList="taskProp.itemList"
                        @closeEditDialog="onClickCloseDialog('edit')"
                        @saveChanges="onClickSaveChanges(chosenTaskIndex, $event)"
+                       :key="chosenTaskIndex"
             >
             </edit-task>
           </v-dialog>
         </v-btn>
         <v-btn icon
-               class="black--text"
                :disabled="chosenTaskIndex === -1"
                @click="deleteTaskWithIndex(chosenTaskIndex)"
         >
-          <v-icon>mdi-close-circle-outline</v-icon>
+          <v-icon size="35">
+            mdi-close-circle-outline
+          </v-icon>
         </v-btn>
       </v-row>
     </v-container>
-    <v-simple-table >
+    <v-simple-table>
       <thead>
       <tr>
         <th class="text-h6 black--text">Задания</th>
@@ -45,22 +60,25 @@
       </tr>
       </thead>
       <tbody>
-      <tr v-for="(task, index) in taskList" :key="index" @click="onClickTask(index)" :class="rowStyle(index)">
+      <tr v-for="(task, index) in taskList"
+          :key="index"
+          @click="onClickTask(index)"
+          :class="rowStyle(index)"
+      >
         <td class="font-weight-bold text-subtitle-1">{{ task.title }}</td>
         <td>
-              <v-container
-                           v-for="(item, item_index) in task.items"
-                           :key="item_index"
-                           class="my-1"
-              >
-                <v-row>
-                  <v-simple-checkbox v-model="item.itemStatus"
-                                     color="black"
+          <v-container v-for="(item, item_index) in task.itemList"
+                       :key="item_index"
+                       class="my-1"
+          >
+            <v-row>
+              <v-simple-checkbox v-model="item.itemStatus"
+                                 color="black"
 
-                  ></v-simple-checkbox>
-                  <div class="my-1 ml-2">{{ item.itemTitle }}</div>
-                </v-row>
-              </v-container>
+              ></v-simple-checkbox>
+              <div class="my-1 ml-2">{{ item.itemTitle }}</div>
+            </v-row>
+          </v-container>
         </td>
       </tr>
       </tbody>
@@ -79,13 +97,12 @@ export default {
   },
   data() {
     return {
-      headers:['Задания', 'Задачи'],
       taskList: [
         {
           title: 'Задание 1',
-          items: [
+          itemList: [
             {
-              itemTitle:'Задача 1.1',
+              itemTitle: 'Задача 1.1',
               itemStatus: true
             },
             {
@@ -111,9 +128,9 @@ export default {
         },
         {
           title: 'Задание 2',
-          items: [
+          itemList: [
             {
-              itemTitle:'Задача 2.1',
+              itemTitle: 'Задача 2.1',
               itemStatus: false
             },
             {
@@ -127,17 +144,17 @@ export default {
         },
         {
           title: 'Задание 3',
-          items: [
+          itemList: [
             {
-              itemTitle:'Задача 3.1',
+              itemTitle: 'Задача 3.1',
               itemStatus: true
             }]
         },
         {
           title: 'Задание 4',
-          items: [
+          itemList: [
             {
-              itemTitle:'Задача 4.1',
+              itemTitle: 'Задача 4.1',
               itemStatus: false
             },
             {
@@ -156,10 +173,13 @@ export default {
       if (this.taskList.length === 0 || this.chosenTaskIndex === -1 || this.chosenTaskIndex >= this.taskList.length) {
         return {
           title: 'Not found',
-          items: []
+          itemList: []
         }
       } else {
-        return this.taskList[this.chosenTaskIndex]
+        return {
+          title: this.taskList[this.chosenTaskIndex].title,
+          itemList: this.taskList[this.chosenTaskIndex].itemList
+        }
       }
     }
   },
@@ -179,13 +199,13 @@ export default {
     },
     onClickSaveChanges(index, data) {
       this.taskList[index].title = data.title;
-      this.taskList[index].items = data.itemList;
+      this.taskList[index].itemList = data.itemList;
       this.showEditDialog = false;
     },
     onClickAddTask(data) {
       this.taskList.push({
         title: data.title,
-        items: data.itemList,
+        itemList: data.itemList,
       });
       this.showAddDialog = false;
     },
