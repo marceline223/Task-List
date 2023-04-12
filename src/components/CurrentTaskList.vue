@@ -51,22 +51,21 @@
               <v-container
                            v-for="(item, item_index) in task.items"
                            :key="item_index"
+                           class="my-1"
               >
                 <v-row>
                   <v-simple-checkbox v-model="item.itemStatus"
                                      color="black"
+
                   ></v-simple-checkbox>
-                  {{ item.itemTitle }}
+                  <div class="my-1">{{ item.itemTitle }}</div>
+
                 </v-row>
               </v-container>
         </td>
       </tr>
       </tbody>
     </v-simple-table>
-
-<!--    <v-data-table>-->
-
-<!--    </v-data-table>-->
   </div>
 </template>
 
@@ -193,7 +192,7 @@ export default {
     },
     rowStyle(index) {
       if (index === this.chosenTaskIndex) {
-        return 'grey lighten-1'
+        return 'grey lighten-2'
       } else {
         return ''
       }
