@@ -97,7 +97,7 @@ export default {
   },
   computed: {
     taskProp() {
-      if (this.taskList.length === 0 || this.chosenTask === -1) {
+      if (this.taskList.length === 0 || this.chosenTask === -1 || this.chosenTask >= this.taskList.length) {
         return {
           title: 'Not found',
           items: [],
