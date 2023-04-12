@@ -22,7 +22,7 @@
         </v-btn>
         <v-btn icon
                class="mr-4"
-               :disabled="chosenTaskIndex === -1"
+               :disabled="!isValidChosenTaskIndex"
                @click="showEditDialog = true"
         >
           <v-icon
@@ -43,7 +43,7 @@
           </v-dialog>
         </v-btn>
         <v-btn icon
-               :disabled="chosenTaskIndex === -1"
+               :disabled="!isValidChosenTaskIndex"
                @click="deleteTaskWithIndex(chosenTaskIndex)"
         >
           <v-icon size="35">
@@ -169,8 +169,11 @@ export default {
     }
   },
   computed: {
+    isValidChosenTaskIndex() {
+      return !(this.chosenTaskIndex === -1 || this.chosenTaskIndex >= this.taskList.length);
+    },
     taskProp() {
-      if (this.taskList.length === 0 || this.chosenTaskIndex === -1 || this.chosenTaskIndex >= this.taskList.length) {
+      if (this.taskList.length === 0 || !this.isValidChosenTaskIndex) {
         return {
           title: 'Not found',
           itemList: []
