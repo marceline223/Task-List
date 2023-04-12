@@ -98,9 +98,6 @@
           <v-btn @click="onClickCloseDialog" class="ma-5">Отмена</v-btn>
         </v-row>
       </v-container>
-      {{newTitle}}
-      <br>
-      {{newItemList}}
     </v-card>
   </div>
 </template>
