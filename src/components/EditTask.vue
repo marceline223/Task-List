@@ -12,10 +12,18 @@
           </v-btn>
         </v-row>
       </v-container>
-      <v-container>
-        <label>Название:</label>
-        <input type="text" :value="title"
-               @input="onInput('title', $event)">
+      <v-container fluid>
+        <v-row>
+         <div class="ma-6">Задание:</div>
+          <v-text-field :value="title"
+                        @input="onInput('title', $event)"
+                        type="input"
+                        clearable
+                        class="mx-5"
+          >
+          </v-text-field>
+        </v-row>
+
       </v-container>
       <v-btn @click="onClickCloseDialog" class="ma-3">Сбросить</v-btn>
       <v-btn @click="onClickSaveButton" class="ma-3">Сохранить изменения</v-btn>
