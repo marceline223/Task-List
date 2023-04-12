@@ -3,7 +3,7 @@
     <v-card>
       <v-container fluid>
         <v-row justify="space-between" align="start">
-          <h3 class="ma-3">Редактирование</h3>
+          <v-card-title>Редактирование задания</v-card-title>
           <v-btn icon
                  class="ma-3 black--text"
                  @click="onClickCloseDialog"
@@ -12,9 +12,9 @@
           </v-btn>
         </v-row>
       </v-container>
-      <v-container fluid>
+      <v-container>
         <v-row>
-         <div class="ma-6">Задание:</div>
+          <div class="ma-5">Задание:</div>
           <v-text-field :value="title"
                         @input="onInput('title', $event)"
                         type="input"
@@ -23,10 +23,41 @@
           >
           </v-text-field>
         </v-row>
-
       </v-container>
-      <v-btn @click="onClickCloseDialog" class="ma-3">Сбросить</v-btn>
-      <v-btn @click="onClickSaveButton" class="ma-3">Сохранить изменения</v-btn>
+      <v-container>
+        <v-row>
+          <div class="ml-5 mt-1">Список задач:</div>
+          <v-btn icon>
+            <v-icon class="black--text">
+              mdi-plus-box-outline
+            </v-icon>
+          </v-btn>
+
+          <v-btn icon>
+            <v-icon class="black--text">
+              mdi-close-box-outline
+            </v-icon>
+          </v-btn>
+        </v-row>
+      </v-container>
+      <v-container>
+        <v-row justify="end">
+          <v-btn class="ma-5" icon>
+            <v-icon>
+              mdi-restore
+            </v-icon>
+          </v-btn>
+
+          <v-btn class="ma-5" icon>
+            <v-icon>
+              mdi-reload
+            </v-icon>
+          </v-btn>
+
+          <v-btn @click="onClickSaveButton" class="ma-5">Сохранить</v-btn>
+          <v-btn @click="onClickCloseDialog" class="ma-5">Отмена</v-btn>
+        </v-row>
+      </v-container>
     </v-card>
   </div>
 </template>
@@ -45,13 +76,13 @@ export default {
     }
   },
   methods: {
-    onClickSaveButton(e) {
+    onClickSaveButton() {
       this.$emit('saveChanges', {
         title: this.newTitle,
         itemList: this.newItemList
       })
     },
-    onClickCloseDialog(e) {
+    onClickCloseDialog() {
       this.newTitle = '';
       this.newItemList = [];
       this.$emit('closeEditDialog');
