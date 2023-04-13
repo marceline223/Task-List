@@ -125,7 +125,7 @@ export default {
     },
     onClickAddItemButton() {
       this.newItemList.push({
-        itemTitle: '',
+        itemTitle: 'Новая задача',
         itemStatus: false
       })
     },
