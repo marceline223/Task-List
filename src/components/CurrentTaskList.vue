@@ -220,6 +220,6 @@ export default {
  }
  .items-column {
    width: 70%;
- };
+ }
 
 </style>
