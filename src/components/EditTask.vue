@@ -94,7 +94,7 @@
             </v-icon>
           </v-btn>
 
-          <v-btn @click="onClickSaveButton" class="ma-5">Сохранить</v-btn>
+          <v-btn @click="onClickSaveButton" class="ma-5" :disabled="emptyItemTitles">Сохранить</v-btn>
           <v-btn @click="onClickCloseDialog" class="ma-5">Отмена</v-btn>
         </v-row>
       </v-container>
@@ -114,6 +114,17 @@ export default {
       newTitle: this.title,
       newItemList: this.itemList,
       chosenItemIndex: -1
+    }
+  },
+  computed: {
+    emptyItemTitles() {
+      for (let item of this.newItemList ) {
+        let trimTitle = item.itemTitle.trim();
+        if (!trimTitle) {
+          return true;
+        }
+      }
+      return false;
     }
   },
   methods: {
