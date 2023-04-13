@@ -57,18 +57,19 @@
           @click="onClickTask(index)"
           :class="rowStyle(index)"
       >
-        <td class="font-weight-bold text-subtitle-1">{{ task.title }}</td>
-        <td>
+        <td class="font-weight-bold text-subtitle-1 title-column">{{ task.title }}</td>
+        <td class="items-column">
           <v-container v-for="(item, item_index) in task.itemList"
                        :key="item_index"
-                       class="my-1"
           >
             <v-row>
               <v-simple-checkbox v-model="item.itemStatus"
                                  color="black"
 
               ></v-simple-checkbox>
-              <div class="my-1 ml-2">{{ item.itemTitle }}</div>
+              <div class="text-justify item-title-container">
+                <p class="my-1 ml-2">{{ item.itemTitle }}</p>
+              </div>
             </v-row>
           </v-container>
         </td>
@@ -149,7 +150,7 @@ export default {
               itemStatus: false
             },
             {
-              itemTitle: 'Задача 4.2',
+              itemTitle: 'Opacity helper classes allow you to easily adjust the emphasis of text. text-high-emphasis has the same opacity as default text. text-medium-emphasis is used for hints and helper text. De-emphasize text with text-disabled.Opacity helper classes allow you to easily adjust the emphasis of text. text-high-emphasis has the same opacity as default text. text-medium-emphasis is used for hints and helper text. De-emphasize text with text-disabled.Opacity helper classes allow you to easily adjust the emphasis of text. text-high-emphasis has the same opacity as default text. text-medium-emphasis is used for hints and helper text. De-emphasize text with text-disabled.Opacity helper classes allow you to easily adjust the emphasis of text. text-high-emphasis has the same opacity as default text. text-medium-emphasis is used for hints and helper text. De-emphasize text with text-disabled.',
               itemStatus: true
             }]
         }
@@ -198,7 +199,7 @@ export default {
     },
     onClickAddTask() {
       this.taskList.push({
-        title: '',
+        title: 'Новое задание',
         itemList: [],
       });
     },
@@ -213,3 +214,12 @@ export default {
 }
 </script>
 
+<style>
+ .item-title-container {
+   max-width: 95%;
+ }
+ .items-column {
+   width: 70%;
+ };
+
+</style>
