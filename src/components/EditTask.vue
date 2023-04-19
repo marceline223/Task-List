@@ -32,17 +32,14 @@
           <v-btn icon class="mx-2"
                  @click="onClickAddItemButton"
           >
-            <v-icon size="35">
-              mdi-plus-box-outline
-            </v-icon>
+            <v-icon size="35"> mdi-plus-box-outline </v-icon>
           </v-btn>
 
           <v-btn icon class="mx-2"
                  @click="onClickDeleteItemButton(chosenItemIndex)"
+                 :disabled="chosenItemIndex === -1"
           >
-            <v-icon size="35">
-              mdi-close-box-outline
-            </v-icon>
+            <v-icon size="35"> mdi-close-box-outline </v-icon>
           </v-btn>
         </v-row>
       </v-container>
@@ -87,19 +84,13 @@
           <!--Назад и вперед-->
           <v-btn class="ma-5"
                  @click="onClickRevertChange"
-                 :disabled="!changeToReverse"
-          >
-            <v-icon>
-              mdi-restore
-            </v-icon>
+                 :disabled="!changeToReverse">
+            <v-icon> mdi-restore </v-icon>
           </v-btn>
           <v-btn class="ma-5"
                  @click="onClickRepeatChange"
-                 :disabled="!changeToRepeat"
-          >
-            <v-icon>
-              mdi-reload
-            </v-icon>
+                 :disabled="!changeToRepeat">
+            <v-icon> mdi-reload </v-icon>
           </v-btn>
 
           <!--Сохранить и отменить-->
