@@ -188,6 +188,21 @@ export default {
         this.newTitle = (type === 'prev') ? change.oldValue : change.newValue;
       } else if (change.type === 'changeItemTitle') {
         this.newItemList[change.index].itemTitle = (type === 'prev') ? change.oldValue : change.newValue;
+      } else if (change.type === 'addItem') {
+        if (type === 'prev') {
+          this.newItemList.pop();
+        } else {
+          this.newItemList.push({
+            itemTitle: 'Новая задача',
+            itemStatus: false
+          })
+        }
+      } else if (change.type === 'deleteItem') {
+        if (type === 'prev') {
+          this.newItemList.splice(change.index, 0, change.oldValue);
+        } else {
+          this.newItemList.splice(change.index, 1);
+        }
       }
     },
     deleteLostChanges() {
@@ -215,6 +230,12 @@ export default {
       })
     },
     onClickAddItemButton() {
+      this.deleteLostChanges();
+      this.historyOfChanges.arrayOfChanges.push({
+        type: 'addItem'
+      });
+      this.historyOfChanges.pointerOfCurrentChange++;
+
       this.newItemList.push({
         itemTitle: 'Новая задача',
         itemStatus: false
@@ -226,9 +247,17 @@ export default {
         itemList: this.itemList
       });
     },
-    onClickDeleteItemButton(index) {
-      if (index !== -1) {
-        this.newItemList.splice(index, 1);
+    onClickDeleteItemButton(item_index) {
+      if (item_index !== -1) {
+        this.deleteLostChanges();
+        this.historyOfChanges.arrayOfChanges.push({
+          type: 'deleteItem',
+          index: item_index,
+          oldValue: this.newItemList[item_index]
+        });
+        this.historyOfChanges.pointerOfCurrentChange++;
+
+        this.newItemList.splice(item_index, 1);
       }
     },
     onClickItem(index) {
