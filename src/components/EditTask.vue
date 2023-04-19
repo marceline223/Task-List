@@ -16,7 +16,7 @@
         <v-row>
           <div class="ma-5">Задание:</div>
           <v-text-field :value="newTitle"
-                        @change = "onChangeTitle"
+                        @change="onChangeTitle"
                         type="input"
                         clearable
                         class="mx-8"
@@ -65,13 +65,13 @@
             <v-simple-checkbox color="black"
                                @input="onInputItemStatus(item_index, $event)"
                                :value="item.itemStatus"
-                               :key = "item.itemStatus"
+                               :key="item.itemStatus"
             >
             </v-simple-checkbox>
           </td>
           <td>
             <v-text-field :value="item.itemTitle"
-                          @change = "onChangeItemTitle(item_index, $event)"
+                          @change="onChangeItemTitle(item_index, $event)"
                           type="input"
                           clearable
             >
@@ -122,7 +122,7 @@ export default {
     return {
       newTitle: this.title,
 
-      //это необходимо, чтобы избежать двусторонней привязки массивов и сделать копию
+      //это необходимо, чтобы избежать двусторонней привязки массивов и сделать просто копию
       newItemList: JSON.parse(JSON.stringify(this.itemList)),
 
       chosenItemIndex: -1,
@@ -155,12 +155,7 @@ export default {
   },
   methods: {
     onChangeTitle(e) {
-      if (this.historyOfChanges.pointerOfCurrentChange !== this.historyOfChanges.arrayOfChanges.length) {
-        //если при внесении изменения указатель был не в конце (то есть были изменения после текущей версии), то
-        //обрубаем массив
-        let countToDelete = this.historyOfChanges.arrayOfChanges.length - this.historyOfChanges.pointerOfCurrentChange;
-        this.historyOfChanges.arrayOfChanges.splice(this.historyOfChanges.pointerOfCurrentChange, countToDelete);
-      }
+      this.deleteLostChanges();
       this.historyOfChanges.arrayOfChanges.push({
         type: 'changeTitle',
         oldValue: this.newTitle,
@@ -171,12 +166,7 @@ export default {
       this.newTitle = e;
     },
     onChangeItemTitle(item_index, e) {
-      if (this.historyOfChanges.pointerOfCurrentChange !== this.historyOfChanges.arrayOfChanges.length) {
-        //если при внесении изменения указатель был не в конце (то есть были изменения после текущей версии), то
-        //обрубаем массив
-        let countToDelete = this.historyOfChanges.arrayOfChanges.length - this.historyOfChanges.pointerOfCurrentChange;
-        this.historyOfChanges.arrayOfChanges.splice(this.historyOfChanges.pointerOfCurrentChange, countToDelete);
-      }
+      this.deleteLostChanges();
       this.historyOfChanges.arrayOfChanges.push({
         type: 'changeItemTitle',
         index: item_index,
@@ -188,13 +178,7 @@ export default {
       this.newItemList[item_index].itemTitle = e;
     },
     onInputItemStatus(item_index, e) {
-      if (this.historyOfChanges.pointerOfCurrentChange !== this.historyOfChanges.arrayOfChanges.length) {
-        //если при внесении изменения указатель был не в конце (то есть были изменения после текущей версии), то
-        //обрубаем массив
-        let countToDelete = this.historyOfChanges.arrayOfChanges.length - this.historyOfChanges.pointerOfCurrentChange;
-        this.historyOfChanges.arrayOfChanges.splice(this.historyOfChanges.pointerOfCurrentChange, countToDelete);
-      }
-
+      this.deleteLostChanges();
       this.historyOfChanges.arrayOfChanges.push({
         type: 'changeItemStatus',
         index: item_index,
@@ -213,6 +197,16 @@ export default {
         this.newTitle = (type === 'prev') ? change.oldValue : change.newValue;
       } else if (change.type === 'changeItemTitle') {
         this.newItemList[change.index].itemTitle = (type === 'prev') ? change.oldValue : change.newValue;
+      }
+    },
+    deleteLostChanges() {
+      let pointer = this.historyOfChanges.pointerOfCurrentChange;
+      let length = this.historyOfChanges.arrayOfChanges.length;
+      if (pointer !== length) {
+        //если при внесении изменения указатель был не в конце (то есть были изменения после текущей версии), то
+        //последующие версии сбрасываются
+        let countToDelete = length - pointer;
+        this.historyOfChanges.arrayOfChanges.splice(this.historyOfChanges.pointerOfCurrentChange, countToDelete);
       }
     },
     onClickRevertChange() {
