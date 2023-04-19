@@ -1,8 +1,7 @@
 <template>
   <div>
-    <h2 class="mt-4">Список заданий</h2>
     <v-container>
-      <v-row>
+      <v-row class="mb-1">
         <v-btn
             class="mr-4"
             icon
