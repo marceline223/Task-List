@@ -116,7 +116,10 @@ export default {
   data() {
     return {
       newTitle: this.title,
+
+      //это необходимо, чтобы избежать двусторонней привязки массивов и сделать копию
       newItemList: JSON.parse(JSON.stringify(this.itemList)),
+
       chosenItemIndex: -1,
     }
   },

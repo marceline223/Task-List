@@ -185,9 +185,6 @@ export default {
       this.chosenTaskIndex = index;
     },
     onClickCloseDialog(index, data) {
-      console.log('onclick close dialog method');
-      console.log('title from component: ' + data.title);
-      console.log('itemList from component: ' + data.itemList[0].itemTitle);
       this.taskList[index].title = data.title;
       this.taskList[index].itemList = data.itemList;
       this.showEditDialog = false
