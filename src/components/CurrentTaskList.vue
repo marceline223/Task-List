@@ -17,9 +17,7 @@
                :disabled="!isValidChosenTaskIndex"
                @click="showEditDialog = true"
         >
-          <v-icon
-              size="35"
-          >
+          <v-icon size="35">
             mdi-pencil
           </v-icon>
           <v-dialog v-model="showEditDialog"
@@ -27,9 +25,9 @@
           >
             <edit-task :title="taskProp.title"
                        :itemList="taskProp.itemList"
-                       @closeEditDialog="onClickCloseDialog('edit')"
+                       @closeEditDialog="onClickCloseDialog(chosenTaskIndex, $event)"
                        @saveChanges="onClickSaveChanges(chosenTaskIndex, $event)"
-                       :key="chosenTaskIndex"
+                       :key="showEditDialog"
             >
             </edit-task>
           </v-dialog>
@@ -63,7 +61,8 @@
                        :key="item_index"
           >
             <v-row>
-              <v-simple-checkbox v-model="item.itemStatus"
+              <v-simple-checkbox :value="item.itemStatus"
+                                 @input="onInputItemStatus(index, item_index, $event)"
                                  color="black"
 
               ></v-simple-checkbox>
@@ -185,12 +184,13 @@ export default {
     onClickTask(index) {
       this.chosenTaskIndex = index;
     },
-    onClickCloseDialog(type) {
-      if (type === 'add') {
-        this.showAddDialog = false;
-      } else if (type === 'edit') {
-        this.showEditDialog = false;
-      }
+    onClickCloseDialog(index, data) {
+      console.log('onclick close dialog method');
+      console.log('title from component: ' + data.title);
+      console.log('itemList from component: ' + data.itemList[0].itemTitle);
+      this.taskList[index].title = data.title;
+      this.taskList[index].itemList = data.itemList;
+      this.showEditDialog = false
     },
     onClickSaveChanges(index, data) {
       this.taskList[index].title = data.title;
@@ -209,7 +209,10 @@ export default {
       } else {
         return ''
       }
-    }
+    },
+    onInputItemStatus(task_index, item_index, e) {
+      this.taskList[task_index].itemList[item_index].itemStatus = e;
+    },
   }
 }
 </script>

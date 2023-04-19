@@ -16,7 +16,7 @@
         <v-row>
           <div class="ma-5">Задание:</div>
           <v-text-field :value="newTitle"
-                        v-model="newTitle"
+                        @input = "onInputTitle"
                         type="input"
                         clearable
                         class="mx-8"
@@ -62,14 +62,16 @@
             :class="rowStyle(item_index)"
         >
           <td>
-            <v-simple-checkbox v-model="item.itemStatus"
-                               color="black"
+            <v-simple-checkbox color="black"
+                               @input="onInputItemStatus(item_index, $event)"
+                               :value="item.itemStatus"
+                               :key = "item.itemStatus"
             >
             </v-simple-checkbox>
           </td>
           <td>
             <v-text-field :value="item.itemTitle"
-                          v-model="item.itemTitle"
+                          @input = "onInputItemTitle(item_index, $event)"
                           type="input"
                           clearable
             >
@@ -82,19 +84,21 @@
       <!--КНОПКИ-->
       <v-container>
         <v-row justify="end">
+          <!--Назад и вперед-->
           <v-btn class="ma-5">
             <v-icon>
               mdi-restore
             </v-icon>
           </v-btn>
-
           <v-btn class="ma-5">
             <v-icon>
               mdi-reload
             </v-icon>
           </v-btn>
 
+          <!--Сохранить и отменить-->
           <v-btn @click="onClickSaveButton" class="ma-5" :disabled="emptyItemTitles">Сохранить</v-btn>
+<!--          <v-btn @click="onClickSaveButton" class="ma-5">Сохранить</v-btn>-->
           <v-btn @click="onClickCloseDialog" class="ma-5">Отмена</v-btn>
         </v-row>
       </v-container>
@@ -112,13 +116,16 @@ export default {
   data() {
     return {
       newTitle: this.title,
-      newItemList: this.itemList,
-      chosenItemIndex: -1
+      newItemList: JSON.parse(JSON.stringify(this.itemList)),
+      chosenItemIndex: -1,
     }
   },
   computed: {
     emptyItemTitles() {
-      for (let item of this.newItemList ) {
+      for (let item of this.newItemList) {
+        if (!item.itemTitle) {
+          return true;
+        }
         let trimTitle = item.itemTitle.trim();
         if (!trimTitle) {
           return true;
@@ -128,6 +135,15 @@ export default {
     }
   },
   methods: {
+    onInputTitle(e) {
+      this.newTitle = e;
+    },
+    onInputItemTitle(item_index, e) {
+      this.newItemList[item_index].itemTitle = e;
+    },
+    onInputItemStatus(item_index, e) {
+      this.newItemList[item_index].itemStatus = e;
+    },
     onClickSaveButton() {
       this.$emit('saveChanges', {
         title: this.newTitle,
@@ -141,7 +157,10 @@ export default {
       })
     },
     onClickCloseDialog() {
-      this.$emit('closeEditDialog');
+      this.$emit('closeEditDialog', {
+        title: this.title,
+        itemList: this.itemList
+      });
     },
     onClickDeleteItemButton(index) {
       if (index !== -1) {
