@@ -16,7 +16,7 @@
         <v-row>
           <div class="ma-5">Задание:</div>
           <v-text-field :value="newTitle"
-                        @input = "onInputTitle"
+                        @change = "onChangeTitle"
                         type="input"
                         clearable
                         class="mx-8"
@@ -71,7 +71,7 @@
           </td>
           <td>
             <v-text-field :value="item.itemTitle"
-                          @input = "onInputItemTitle(item_index, $event)"
+                          @change = "onChangeItemTitle(item_index, $event)"
                           type="input"
                           clearable
             >
@@ -85,12 +85,18 @@
       <v-container>
         <v-row justify="end">
           <!--Назад и вперед-->
-          <v-btn class="ma-5">
+          <v-btn class="ma-5"
+                 @click="onClickRevertChange"
+                 :disabled="!changeToReverse"
+          >
             <v-icon>
               mdi-restore
             </v-icon>
           </v-btn>
-          <v-btn class="ma-5">
+          <v-btn class="ma-5"
+                 @click="onClickRepeatChange"
+                 :disabled="!changeToRepeat"
+          >
             <v-icon>
               mdi-reload
             </v-icon>
@@ -98,7 +104,6 @@
 
           <!--Сохранить и отменить-->
           <v-btn @click="onClickSaveButton" class="ma-5" :disabled="emptyItemTitles">Сохранить</v-btn>
-<!--          <v-btn @click="onClickSaveButton" class="ma-5">Сохранить</v-btn>-->
           <v-btn @click="onClickCloseDialog" class="ma-5">Отмена</v-btn>
         </v-row>
       </v-container>
@@ -121,6 +126,11 @@ export default {
       newItemList: JSON.parse(JSON.stringify(this.itemList)),
 
       chosenItemIndex: -1,
+
+      historyOfChanges: {
+        arrayOfChanges: [],
+        pointerOfCurrentChange: 0
+      }
     }
   },
   computed: {
@@ -135,17 +145,83 @@ export default {
         }
       }
       return false;
+    },
+    changeToRepeat() {
+      return (this.historyOfChanges.pointerOfCurrentChange !== this.historyOfChanges.arrayOfChanges.length);
+    },
+    changeToReverse() {
+      return (this.historyOfChanges.pointerOfCurrentChange !== 0);
     }
   },
   methods: {
-    onInputTitle(e) {
+    onChangeTitle(e) {
+      if (this.historyOfChanges.pointerOfCurrentChange !== this.historyOfChanges.arrayOfChanges.length) {
+        //если при внесении изменения указатель был не в конце (то есть были изменения после текущей версии), то
+        //обрубаем массив
+        let countToDelete = this.historyOfChanges.arrayOfChanges.length - this.historyOfChanges.pointerOfCurrentChange;
+        this.historyOfChanges.arrayOfChanges.splice(this.historyOfChanges.pointerOfCurrentChange, countToDelete);
+      }
+      this.historyOfChanges.arrayOfChanges.push({
+        type: 'changeTitle',
+        oldValue: this.newTitle,
+        newValue: e
+      });
+      this.historyOfChanges.pointerOfCurrentChange++;
+
       this.newTitle = e;
     },
-    onInputItemTitle(item_index, e) {
+    onChangeItemTitle(item_index, e) {
+      if (this.historyOfChanges.pointerOfCurrentChange !== this.historyOfChanges.arrayOfChanges.length) {
+        //если при внесении изменения указатель был не в конце (то есть были изменения после текущей версии), то
+        //обрубаем массив
+        let countToDelete = this.historyOfChanges.arrayOfChanges.length - this.historyOfChanges.pointerOfCurrentChange;
+        this.historyOfChanges.arrayOfChanges.splice(this.historyOfChanges.pointerOfCurrentChange, countToDelete);
+      }
+      this.historyOfChanges.arrayOfChanges.push({
+        type: 'changeItemTitle',
+        index: item_index,
+        oldValue: this.newItemList[item_index].itemTitle,
+        newValue: e
+      });
+      this.historyOfChanges.pointerOfCurrentChange++;
+
       this.newItemList[item_index].itemTitle = e;
     },
     onInputItemStatus(item_index, e) {
+      if (this.historyOfChanges.pointerOfCurrentChange !== this.historyOfChanges.arrayOfChanges.length) {
+        //если при внесении изменения указатель был не в конце (то есть были изменения после текущей версии), то
+        //обрубаем массив
+        let countToDelete = this.historyOfChanges.arrayOfChanges.length - this.historyOfChanges.pointerOfCurrentChange;
+        this.historyOfChanges.arrayOfChanges.splice(this.historyOfChanges.pointerOfCurrentChange, countToDelete);
+      }
+
+      this.historyOfChanges.arrayOfChanges.push({
+        type: 'changeItemStatus',
+        index: item_index,
+        oldValue: this.newItemList[item_index].itemStatus,
+        newValue: e
+      });
+      this.historyOfChanges.pointerOfCurrentChange++;
+
       this.newItemList[item_index].itemStatus = e;
+    },
+    backUpVersion(type, pointer) {
+      let change = this.historyOfChanges.arrayOfChanges[pointer];
+      if (change.type === 'changeItemStatus') {
+        this.newItemList[change.index].itemStatus = (type === 'prev') ? change.oldValue : change.newValue;
+      } else if (change.type === 'changeTitle') {
+        this.newTitle = (type === 'prev') ? change.oldValue : change.newValue;
+      } else if (change.type === 'changeItemTitle') {
+        this.newItemList[change.index].itemTitle = (type === 'prev') ? change.oldValue : change.newValue;
+      }
+    },
+    onClickRevertChange() {
+      this.historyOfChanges.pointerOfCurrentChange--;
+      this.backUpVersion('prev', this.historyOfChanges.pointerOfCurrentChange);
+    },
+    onClickRepeatChange() {
+      this.backUpVersion('next', this.historyOfChanges.pointerOfCurrentChange);
+      this.historyOfChanges.pointerOfCurrentChange++;
     },
     onClickSaveButton() {
       this.$emit('saveChanges', {
