@@ -24,7 +24,7 @@
           >
             <edit-task :title="taskProp.title"
                        :itemList="taskProp.itemList"
-                       @closeEditDialog="onClickCloseDialog(chosenTaskIndex, $event)"
+                       @closeEditDialog="onClickCloseDialog"
                        @saveChanges="onClickSaveChanges(chosenTaskIndex, $event)"
                        :key="showEditDialog"
             >
@@ -55,21 +55,71 @@
           :class="rowStyle(index)"
       >
         <td class="font-weight-bold text-subtitle-1 title-column">{{ task.title }}</td>
-        <td class="items-column">
-          <v-container v-for="(item, item_index) in task.itemList"
-                       :key="item_index"
-          >
-            <v-row>
-              <v-simple-checkbox :value="item.itemStatus"
-                                 @input="onInputItemStatus(index, item_index, $event)"
-                                 color="black"
 
-              ></v-simple-checkbox>
-              <div class="text-justify item-title-container">
-                <p class="my-1 ml-2">{{ item.itemTitle }}</p>
-              </div>
-            </v-row>
-          </v-container>
+        <!--Список задач-->
+        <td class="items-column">
+          <!--Если список задач длинный, сокращаем до первого-последнего элемента-->
+          <div v-if="task.itemList.length > 5">
+            <!--1-й элемент-->
+            <v-container>
+              <v-row>
+                <v-simple-checkbox :value="task.itemList[0].itemStatus"
+                                   @input="onInputItemStatus(index, 0, $event)"
+                                   color="black"
+
+                ></v-simple-checkbox>
+                <div class="text-justify item-title-container">
+                  <p class="my-1 ml-2">{{ task.itemList[0].itemTitle }}</p>
+                </div>
+              </v-row>
+            </v-container>
+            <v-container>
+              <v-tooltip>
+                <template v-slot:activator="{ on, attrs }">
+                  <div v-bind="attrs"
+                       v-on="on">
+                    ...
+                  </div>
+                </template>
+                <span>
+                  <div v-for="(item, index) in task.itemList" :key="index">
+                    {{item.itemTitle}}
+                  </div>
+                </span>
+              </v-tooltip>
+            </v-container>
+            <!--n-й элемент-->
+            <v-container>
+              <v-row>
+                <v-simple-checkbox :value="task.itemList[task.itemList.length-1].itemStatus"
+                                   @input="onInputItemStatus(index, 0, $event)"
+                                   color="black"
+
+                ></v-simple-checkbox>
+                <div class="text-justify item-title-container">
+                  <p class="my-1 ml-2">{{ task.itemList[task.itemList.length - 1].itemTitle }}</p>
+                </div>
+              </v-row>
+            </v-container>
+
+          </div>
+          <div v-else>
+            <v-container v-for="(item, item_index) in task.itemList"
+                         :key="item_index"
+            >
+              <v-row>
+                <v-simple-checkbox :value="item.itemStatus"
+                                   @input="onInputItemStatus(index, item_index, $event)"
+                                   color="black"
+
+                ></v-simple-checkbox>
+                <div class="text-justify item-title-container">
+                  <p class="my-1 ml-2">{{ item.itemTitle }}</p>
+                </div>
+              </v-row>
+            </v-container>
+          </div>
+
         </td>
       </tr>
       </tbody>
@@ -89,66 +139,54 @@ export default {
     return {
       taskList: [
         {
-          title: 'Задание 1',
+          title: 'Убраться дома',
           itemList: [
             {
-              itemTitle: 'Задача 1.1',
+              itemTitle: 'Пропылесосить',
               itemStatus: true
             },
             {
-              itemTitle: 'Задача 1.2',
+              itemTitle: 'Разгрузить стиральную машину',
               itemStatus: false
             },
             {
-              itemTitle: 'Задача 1.3',
+              itemTitle: 'Помыть окна',
               itemStatus: true
             },
             {
-              itemTitle: 'Задача 1.4',
+              itemTitle: 'Протереть зеркало',
               itemStatus: false
             },
             {
-              itemTitle: 'Задача 1.5',
+              itemTitle: 'Разобрать сушилку',
               itemStatus: false
             },
             {
-              itemTitle: 'Задача 1.6',
-              itemStatus: true
-            }]
-        },
-        {
-          title: 'Задание 2',
-          itemList: [
-            {
-              itemTitle: 'Задача 2.1',
-              itemStatus: false
-            },
-            {
-              itemTitle: 'Задача 2.2',
-              itemStatus: false
-            },
-            {
-              itemTitle: 'Задача 2.2',
-              itemStatus: false
-            }]
-        },
-        {
-          title: 'Задание 3',
-          itemList: [
-            {
-              itemTitle: 'Задача 3.1',
+              itemTitle: 'Выкинуть мусор',
               itemStatus: true
             }]
         },
         {
-          title: 'Задание 4',
+          title: 'Подготовиться к экзамену',
           itemList: [
             {
-              itemTitle: 'Задача 4.1',
+              itemTitle: 'Пересмотреть последнюю лекцию',
               itemStatus: false
             },
             {
-              itemTitle: 'Opacity helper classes allow you to easily adjust the emphasis of text. text-high-emphasis has the same opacity as default text. text-medium-emphasis is used for hints and helper text. De-emphasize text with text-disabled.Opacity helper classes allow you to easily adjust the emphasis of text. text-high-emphasis has the same opacity as default text. text-medium-emphasis is used for hints and helper text. De-emphasize text with text-disabled.Opacity helper classes allow you to easily adjust the emphasis of text. text-high-emphasis has the same opacity as default text. text-medium-emphasis is used for hints and helper text. De-emphasize text with text-disabled.Opacity helper classes allow you to easily adjust the emphasis of text. text-high-emphasis has the same opacity as default text. text-medium-emphasis is used for hints and helper text. De-emphasize text with text-disabled.',
+              itemTitle: 'Потренировать решение задач',
+              itemStatus: false
+            },
+            {
+              itemTitle: 'Просмотреть конспект',
+              itemStatus: false
+            }]
+        },
+        {
+          title: 'ДР Полины',
+          itemList: [
+            {
+              itemTitle: 'Купить подарок',
               itemStatus: true
             }]
         }
@@ -183,9 +221,7 @@ export default {
     onClickTask(index) {
       this.chosenTaskIndex = index;
     },
-    onClickCloseDialog(index, data) {
-      this.taskList[index].title = data.title;
-      this.taskList[index].itemList = data.itemList;
+    onClickCloseDialog() {
       this.showEditDialog = false
     },
     onClickSaveChanges(index, data) {
@@ -208,17 +244,18 @@ export default {
     },
     onInputItemStatus(task_index, item_index, e) {
       this.taskList[task_index].itemList[item_index].itemStatus = e;
-    },
+    }
   }
 }
 </script>
 
 <style>
- .item-title-container {
-   max-width: 95%;
- }
- .items-column {
-   width: 70%;
- }
+.item-title-container {
+  max-width: 95%;
+}
+
+.items-column {
+  width: 70%;
+}
 
 </style>
