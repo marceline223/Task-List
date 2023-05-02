@@ -7,27 +7,22 @@
             icon
             @click="onClickAddTask"
         >
-          <v-icon size="35">
-            mdi-plus-circle-outline
-          </v-icon>
+          <v-icon size="35">mdi-plus-circle-outline</v-icon>
         </v-btn>
         <v-btn icon
                class="mr-4"
                :disabled="!isValidChosenTaskIndex"
                @click="showEditDialog = true"
         >
-          <v-icon size="35">
-            mdi-pencil
-          </v-icon>
+          <v-icon size="35">mdi-pencil</v-icon>
           <v-dialog v-model="showEditDialog"
                     width="75%"
           >
-            <edit-task :title="taskProp.title"
-                       :itemList="taskProp.itemList"
-                       @closeEditDialog="onClickCloseDialog"
+            <edit-task :indexForEditing="chosenTaskIndex"
+                       @closeEditDialog="showEditDialog = false"
                        @saveChanges="onClickSaveChanges(chosenTaskIndex, $event)"
                        :key="showEditDialog"
-            >
+            ><!--!!!!!!!!!!! :key-->
             </edit-task>
           </v-dialog>
         </v-btn>
@@ -35,9 +30,7 @@
                :disabled="!isValidChosenTaskIndex"
                @click="deleteTaskWithIndex(chosenTaskIndex)"
         >
-          <v-icon size="35">
-            mdi-close-circle-outline
-          </v-icon>
+          <v-icon size="35">mdi-close-circle-outline</v-icon>
         </v-btn>
       </v-row>
     </v-container>
@@ -55,7 +48,6 @@
           :class="rowStyle(index)"
       >
         <td class="font-weight-bold text-subtitle-1 title-column">{{ task.title }}</td>
-
         <!--Список задач-->
         <td class="items-column">
           <!--Если список задач длинный, сокращаем до первого-последнего элемента-->
@@ -83,7 +75,7 @@
                 </template>
                 <span>
                   <div v-for="(item, index) in task.itemList" :key="index">
-                    {{item.itemTitle}}
+                    {{ item.itemTitle }}
                   </div>
                 </span>
               </v-tooltip>
@@ -119,7 +111,6 @@
               </v-row>
             </v-container>
           </div>
-
         </td>
       </tr>
       </tbody>
@@ -137,62 +128,7 @@ export default {
   },
   data() {
     return {
-      taskList: [
-        {
-          title: 'Убраться дома',
-          itemList: [
-            {
-              itemTitle: 'Пропылесосить',
-              itemStatus: true
-            },
-            {
-              itemTitle: 'Разгрузить стиральную машину',
-              itemStatus: false
-            },
-            {
-              itemTitle: 'Помыть окна',
-              itemStatus: true
-            },
-            {
-              itemTitle: 'Протереть зеркало',
-              itemStatus: false
-            },
-            {
-              itemTitle: 'Разобрать сушилку',
-              itemStatus: false
-            },
-            {
-              itemTitle: 'Выкинуть мусор',
-              itemStatus: true
-            }]
-        },
-        {
-          title: 'Подготовиться к экзамену',
-          itemList: [
-            {
-              itemTitle: 'Пересмотреть последнюю лекцию',
-              itemStatus: false
-            },
-            {
-              itemTitle: 'Потренировать решение задач',
-              itemStatus: false
-            },
-            {
-              itemTitle: 'Просмотреть конспект',
-              itemStatus: false
-            }]
-        },
-        {
-          title: 'ДР Полины',
-          itemList: [
-            {
-              itemTitle: 'Купить подарок',
-              itemStatus: true
-            }]
-        }
-      ],
       chosenTaskIndex: -1,
-      showAddDialog: false,
       showEditDialog: false
     }
   },
@@ -203,37 +139,42 @@ export default {
     taskProp() {
       if (this.taskList.length === 0 || !this.isValidChosenTaskIndex) {
         return {
-          title: 'Not found',
-          itemList: []
+          task: {
+            title: 'Not found',
+            itemList: []
+          }
         }
       } else {
         return {
-          title: this.taskList[this.chosenTaskIndex].title,
-          itemList: this.taskList[this.chosenTaskIndex].itemList
+          task: {
+            title: this.taskList[this.chosenTaskIndex].title,
+            itemList: this.taskList[this.chosenTaskIndex].itemList
+          }
         }
       }
+    },
+    taskList() {
+      return this.$store.getters.TASK_LIST;
     }
   },
   methods: {
     deleteTaskWithIndex(index) {
-      this.taskList.splice(index, 1);
+      this.$store.commit('DELETE_TASK_BY_INDEX', {
+        indexForDeleting: index
+      });
     },
     onClickTask(index) {
       this.chosenTaskIndex = index;
     },
-    onClickCloseDialog() {
-      this.showEditDialog = false
-    },
     onClickSaveChanges(index, data) {
-      this.taskList[index].title = data.title;
-      this.taskList[index].itemList = data.itemList;
+      this.$store.commit('SET_TASK_BY_INDEX', {
+        indexForSetting: index,
+        task: data.task
+      });
       this.showEditDialog = false;
     },
     onClickAddTask() {
-      this.taskList.push({
-        title: 'Новое задание',
-        itemList: [],
-      });
+      this.$store.commit('ADD_NEW_TASK');
     },
     rowStyle(index) {
       if (index === this.chosenTaskIndex) {
@@ -243,7 +184,11 @@ export default {
       }
     },
     onInputItemStatus(task_index, item_index, e) {
-      this.taskList[task_index].itemList[item_index].itemStatus = e;
+      this.$store.commit('SET_STATUS_OF_ITEM', {
+        taskIndex: task_index,
+        itemIndex: item_index,
+        status: e
+      });
     }
   }
 }
