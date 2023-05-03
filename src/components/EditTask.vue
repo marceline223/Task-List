@@ -6,7 +6,7 @@
           <v-card-title>Редактирование задания</v-card-title>
           <v-btn icon
                  class="ma-3 black--text"
-                 @click="onClickCloseDialog">
+                 @click="onClickResetChanges">
             <v-icon size="35">mdi-close-box-outline</v-icon>
           </v-btn>
         </v-row>
@@ -17,7 +17,7 @@
         <v-row>
           <div class="mx-4 my-5">Задание:</div>
           <v-text-field :value="newTask.title"
-                        @change="onChangeTitle"
+                        @change="onChangeTaskTitle"
                         type="input"
                         clearable>
           </v-text-field>
@@ -57,8 +57,7 @@
             @click="onClickItem(item_index)"
             :class="rowStyle(item_index)">
           <td>
-            <v-simple-checkbox color="black"
-                               @input="onInputItemStatus(item_index, $event)"
+            <v-simple-checkbox @input="onInputItemStatus(item_index, $event)"
                                :value="item.itemStatus"
                                :key="item.itemStatus">
             </v-simple-checkbox>
@@ -91,11 +90,19 @@
             <v-icon> mdi-reload</v-icon>
           </v-btn>
 
+          <!--отменить все изменения-->
+          <v-btn @click="onClickResetChanges" class="ma-5">Отмена
+            <v-dialog v-model="showResetDialog" width="auto">
+              <confirmation-window type="reset"
+                                   @cancel="showResetDialog = false"
+                                   @accept="closeDialog"
+                                   :key="showResetDialog">
+              </confirmation-window>
+            </v-dialog>
+          </v-btn>
+
           <!--сохранить изменения-->
           <v-btn @click="onClickSave" class="ma-5" :disabled="emptyItemTitles">Сохранить</v-btn>
-
-          <!--отменить все изменения-->
-          <v-btn @click="onClickCloseDialog" class="ma-5">Отмена</v-btn>
         </v-row>
       </v-container>
     </v-card>
@@ -103,10 +110,16 @@
 </template>
 
 <script>
+
+import ConfirmationWindow from "@/components/ConfirmationWindow";
+
 export default {
   name: "EditTask",
   props: {
     indexForEditing: Number
+  },
+  components: {
+    ConfirmationWindow
   },
   data() {
     return {
@@ -118,7 +131,8 @@ export default {
       historyOfChanges: {
         arrayOfChanges: [],
         pointerOfCurrentChange: 0
-      }
+      },
+      showResetDialog: false
     }
   },
   beforeMount() {
@@ -151,12 +165,11 @@ export default {
     }
   },
   methods: {
+    closeDialog() {
+      this.$emit('closeEditDialog');
+    },
     onClickItem(index) {
       this.chosenItemIndex = index;
-    },
-    onClickCloseDialog() {
-      //при закрытии все несохраненные изменения сбрасываются
-      this.$emit('closeEditDialog');
     },
     onClickSave() {
       this.$store.commit('SET_TASK_BY_INDEX', {
@@ -166,7 +179,7 @@ export default {
       this.$emit('closeEditDialog');
     },
 
-    onChangeTitle(e) {
+    onChangeTaskTitle(e) {
       this.deleteLostChanges();
       this.historyOfChanges.arrayOfChanges.push({
         type: 'changeTitle',
@@ -224,6 +237,15 @@ export default {
         this.historyOfChanges.pointerOfCurrentChange++;
 
         this.newTask.itemList.splice(item_index, 1);
+      }
+    },
+    onClickResetChanges() {
+      if (this.historyOfChanges.pointerOfCurrentChange === 0) {
+        //если изменений нет, можно просто закрыть окно без предупреждения
+        this.closeDialog();
+      } else {
+        //иначе - показываем диалоговое окно с просьбой подтвердить
+        this.showResetDialog = true;
       }
     },
 

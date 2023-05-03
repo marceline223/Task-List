@@ -30,11 +30,10 @@
                @click="showDeleteDialog = true">
           <v-icon size="35">mdi-close-circle-outline</v-icon>
           <v-dialog v-model="showDeleteDialog" width="auto">
-            <delete-task :index-for-deleting="chosenTaskIndex"
-                         @closeDeleteDialog="showDeleteDialog=false"
-                         :key="showDeleteDialog"
-            >
-            </delete-task>
+            <confirmation-window type="delete"
+                                 @cancel="showDeleteDialog = false"
+                                 @accept="onClickAcceptDeleting">
+            </confirmation-window>
           </v-dialog>
         </v-btn>
       </v-row>
@@ -47,12 +46,12 @@
       </tr>
       </thead>
       <tbody>
+      <!--список задач-->
       <tr v-for="(task, index) in taskList"
           :key="index"
           @click="onClickTask(index)"
           :class="rowStyle(index)">
         <td class="font-weight-bold text-subtitle-1 title-column">{{ task.title }}</td>
-        <!--список задач-->
         <td class="items-column">
           <!--если список задач длинный, сокращаем до первых трёх элементов-->
           <div v-if="task.itemList.length > 7">
@@ -73,8 +72,7 @@
                 <template v-slot:activator="{ on, attrs }">
                   <div v-bind="attrs"
                        v-on="on"
-                       class="ml-5"
-                  >
+                       class="ml-5">
                     ...
                   </div>
                 </template>
@@ -94,8 +92,7 @@
 
           <div v-else>
             <v-container v-for="(item, item_index) in task.itemList"
-                         :key="item_index"
-            >
+                         :key="item_index">
               <v-row>
                 <v-simple-checkbox :value="item.itemStatus"
                                    @input="onInputItemStatus(index, item_index, $event)"></v-simple-checkbox>
@@ -114,12 +111,12 @@
 
 <script>
 import EditTask from "@/components/EditTask";
-import DeleteTask from "@/components/DeleteTask";
+import ConfirmationWindow from "@/components/ConfirmationWindow";
 
 export default {
   name: "CurrentTaskList",
   components: {
-    DeleteTask,
+    ConfirmationWindow,
     EditTask
   },
   data() {
@@ -141,21 +138,18 @@ export default {
     onClickTask(index) {
       this.chosenTaskIndex = index;
     },
-    onClickSaveChanges(index, data) {
-      this.$store.commit('SET_TASK_BY_INDEX', {
-        indexForSetting: index,
-        task: data.task
-      });
-      this.showEditDialog = false;
-    },
     onClickAddTask() {
       this.$store.commit('ADD_NEW_TASK');
+    },
+    onClickAcceptDeleting() {
+      this.$store.commit('DELETE_TASK_BY_INDEX', {
+        indexForDeleting: this.indexForDeleting
+      });
+      this.showDeleteDialog = false;
     },
     rowStyle(index) {
       if (index === this.chosenTaskIndex) {
         return 'grey lighten-2'
-      } else {
-        return ''
       }
     },
     onInputItemStatus(task_index, item_index, e) {
