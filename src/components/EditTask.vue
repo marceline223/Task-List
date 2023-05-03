@@ -44,7 +44,7 @@
       </v-container>
 
       <!--список задач-->
-      <v-simple-table class="task-items-table">
+      <v-simple-table class="task-items-table" dense>
         <thead>
         <tr>
           <th class="text-h6 black--text">Статус</th>
@@ -66,6 +66,8 @@
             <v-text-field :value="item.itemTitle"
                           @change="onChange('changeItemTitle', item_index, $event)"
                           type="input"
+                          dense
+                          class="pt-2"
                           clearable>
             </v-text-field>
           </td>
