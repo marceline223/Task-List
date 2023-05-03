@@ -6,9 +6,9 @@
       {{description}}
     </v-card-text>
     <v-container>
-      <v-row justify="space-around">
+      <v-row justify="end">
         <v-btn @click="onClickCancel">Отмена</v-btn>
-        <v-btn @click="onClickAccept">Подтвердить</v-btn>
+        <v-btn @click="onClickAccept" class="ml-3">Подтвердить</v-btn>
       </v-row>
     </v-container>
   </v-card>
@@ -50,5 +50,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>

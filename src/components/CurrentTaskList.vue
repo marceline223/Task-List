@@ -29,7 +29,7 @@
                :disabled="!isValidChosenTaskIndex"
                @click="showDeleteDialog = true">
           <v-icon size="35">mdi-close-circle-outline</v-icon>
-          <v-dialog v-model="showDeleteDialog" width="auto">
+          <v-dialog v-model="showDeleteDialog" width="50%">
             <confirmation-window type="delete"
                                  @cancel="showDeleteDialog = false"
                                  @accept="onClickAcceptDeleting">

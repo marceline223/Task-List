@@ -92,7 +92,7 @@
 
           <!--отменить все изменения-->
           <v-btn @click="onClickResetChanges" class="ma-5">Отмена
-            <v-dialog v-model="showResetDialog" width="auto">
+            <v-dialog v-model="showResetDialog" width="50%">
               <confirmation-window type="reset"
                                    @cancel="showResetDialog = false"
                                    @accept="closeDialog"
