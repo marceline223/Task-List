@@ -6,8 +6,7 @@
           <v-card-title>Редактирование задания</v-card-title>
           <v-btn icon
                  class="ma-3 black--text"
-                 @click="onClickCloseDialog"
-          >
+                 @click="onClickCloseDialog">
             <v-icon size="35">mdi-close-box-outline</v-icon>
           </v-btn>
         </v-row>
@@ -20,8 +19,7 @@
           <v-text-field :value="newTitle"
                         @change="onChangeTitle"
                         type="input"
-                        clearable
-          >
+                        clearable>
           </v-text-field>
         </v-row>
       </v-container>
@@ -32,17 +30,15 @@
 
           <!--добавить новую задачу-->
           <v-btn icon class="mx-2"
-                 @click="onClickAddItemButton"
-          >
-            <v-icon size="35"> mdi-plus-box-outline</v-icon>
+                 @click="onClickAddItemButton">
+            <v-icon size="35"> mdi-plus-circle-outline</v-icon>
           </v-btn>
 
           <!--удалить выбранную задачу-->
           <v-btn icon class="mx-2"
                  @click="onClickDeleteItemButton(chosenItemIndex)"
-                 :disabled="chosenItemIndex === -1"
-          >
-            <v-icon size="35"> mdi-close-box-outline</v-icon>
+                 :disabled="chosenItemIndex === -1">
+            <v-icon size="35"> mdi-close-circle-outline</v-icon>
           </v-btn>
         </v-row>
       </v-container>
@@ -59,22 +55,19 @@
         <tr v-for="(item, item_index) in newItemList"
             :key="item_index"
             @click="onClickItem(item_index)"
-            :class="rowStyle(item_index)"
-        >
+            :class="rowStyle(item_index)">
           <td>
             <v-simple-checkbox color="black"
                                @input="onInputItemStatus(item_index, $event)"
                                :value="item.itemStatus"
-                               :key="item.itemStatus"
-            >
+                               :key="item.itemStatus">
             </v-simple-checkbox>
           </td>
           <td>
             <v-text-field :value="item.itemTitle"
                           @change="onChangeItemTitle(item_index, $event)"
                           type="input"
-                          clearable
-            >
+                          clearable>
             </v-text-field>
           </td>
         </tr>
@@ -291,7 +284,7 @@ export default {
 </script>
 
 <style scoped>
-  .task-items-table {
-    max-width: 95%;
-  }
+.task-items-table {
+  max-width: 95%;
+}
 </style>

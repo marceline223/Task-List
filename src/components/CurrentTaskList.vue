@@ -21,8 +21,7 @@
             <edit-task :indexForEditing="chosenTaskIndex"
                        @closeEditDialog="showEditDialog = false"
                        @saveChanges="onClickSaveChanges(chosenTaskIndex, $event)"
-                       :key="showEditDialog"
-            ><!--!!!!!!!!!!! :key-->
+                       :key="showEditDialog">
             </edit-task>
           </v-dialog>
         </v-btn>
@@ -45,28 +44,27 @@
       <tr v-for="(task, index) in taskList"
           :key="index"
           @click="onClickTask(index)"
-          :class="rowStyle(index)"
-      >
+          :class="rowStyle(index)">
         <td class="font-weight-bold text-subtitle-1 title-column">{{ task.title }}</td>
         <!--Список задач-->
         <td class="items-column">
-          <!--Если список задач длинный, сокращаем до первого-последнего элемента-->
+          <!--Если список задач длинный, сокращаем до первых трёх элементов-->
           <div v-if="task.itemList.length > 5">
-            <!--1-й элемент-->
-            <v-container>
+            <v-container v-for="(item, item_index) in task.itemList.slice(0,3)" :key="item_index">
               <v-row>
-                <v-simple-checkbox :value="task.itemList[0].itemStatus"
-                                   @input="onInputItemStatus(index, 0, $event)"
-                                   color="black"
-
-                ></v-simple-checkbox>
+                <v-simple-checkbox :value="item.itemStatus"
+                                   @input="onInputItemStatus(index, item_index, $event)"
+                                   color="black">
+                </v-simple-checkbox>
                 <div class="text-justify item-title-container">
-                  <p class="my-1 ml-2">{{ task.itemList[0].itemTitle }}</p>
+                  <p class="my-1 ml-2">{{ item.itemTitle }}</p>
                 </div>
               </v-row>
             </v-container>
+
+            <!--всплывающая подсказка с остальными элементами-->
             <v-container>
-              <v-tooltip>
+              <v-tooltip bottom attach>
                 <template v-slot:activator="{ on, attrs }">
                   <div v-bind="attrs"
                        v-on="on">
@@ -75,26 +73,18 @@
                 </template>
                 <span>
                   <div v-for="(item, index) in task.itemList" :key="index">
-                    {{ item.itemTitle }}
+                    <v-container>
+                      <v-row>
+                        {{ item.itemTitle }}
+                        <div v-if="item.itemStatus" class="ml-3"> ✓ </div>
+                      </v-row>
+                    </v-container>
                   </div>
                 </span>
               </v-tooltip>
             </v-container>
-            <!--n-й элемент-->
-            <v-container>
-              <v-row>
-                <v-simple-checkbox :value="task.itemList[task.itemList.length-1].itemStatus"
-                                   @input="onInputItemStatus(index, 0, $event)"
-                                   color="black"
-
-                ></v-simple-checkbox>
-                <div class="text-justify item-title-container">
-                  <p class="my-1 ml-2">{{ task.itemList[task.itemList.length - 1].itemTitle }}</p>
-                </div>
-              </v-row>
-            </v-container>
-
           </div>
+
           <div v-else>
             <v-container v-for="(item, item_index) in task.itemList"
                          :key="item_index"
