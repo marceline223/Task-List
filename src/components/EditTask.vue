@@ -17,7 +17,7 @@
         <v-row>
           <div class="mx-4 my-5">Задание:</div>
           <v-text-field :value="newTask.title"
-                        @change="onChangeTaskTitle"
+                        @change="onChange('changeTitle', null, $event)"
                         type="input"
                         clearable>
           </v-text-field>
@@ -30,13 +30,13 @@
 
           <!--добавить новую задачу-->
           <v-btn icon class="mx-2"
-                 @click="onClickAddItem">
+                 @click="onChange('addItem')">
             <v-icon size="35"> mdi-plus-circle-outline</v-icon>
           </v-btn>
 
           <!--удалить выбранную задачу-->
           <v-btn icon class="mx-2"
-                 @click="onClickDeleteItem(chosenItemIndex)"
+                 @click="onChange('deleteItem', chosenItemIndex)"
                  :disabled="chosenItemIndex === -1">
             <v-icon size="35"> mdi-close-circle-outline</v-icon>
           </v-btn>
@@ -57,14 +57,14 @@
             @click="onClickItem(item_index)"
             :class="rowStyle(item_index)">
           <td>
-            <v-simple-checkbox @input="onInputItemStatus(item_index, $event)"
+            <v-simple-checkbox @input="onChange('changeItemStatus', item_index, $event)"
                                :value="item.itemStatus"
                                :key="item.itemStatus">
             </v-simple-checkbox>
           </td>
           <td>
             <v-text-field :value="item.itemTitle"
-                          @change="onChangeItemTitle(item_index, $event)"
+                          @change="onChange('changeItemTitle', item_index, $event)"
                           type="input"
                           clearable>
             </v-text-field>
@@ -179,65 +179,63 @@ export default {
       this.$emit('closeEditDialog');
     },
 
-    onChangeTaskTitle(e) {
-      this.deleteLostChanges();
-      this.historyOfChanges.arrayOfChanges.push({
-        type: 'changeTitle',
-        oldValue: this.newTask.title,
-        newValue: e
-      });
-      this.historyOfChanges.pointerOfCurrentChange++;
+    onChange(type, item_index, e) {
+      //метод-оболочка для всех типов изменений
+      this.deleteLostChanges(); //удалить все изменения после текущего состояния
 
-      this.newTask.title = e;
-    },
-    onClickAddItem() {
-      this.deleteLostChanges();
-      this.historyOfChanges.arrayOfChanges.push({
-        type: 'addItem'
-      });
-      this.historyOfChanges.pointerOfCurrentChange++;
+      switch (type) {
+        case 'changeTitle':
+          this.historyOfChanges.arrayOfChanges.push({
+            type: 'changeTitle',
+            oldValue: this.newTask.title,
+            newValue: e
+          });
+          this.newTask.title = e;
+          break;
 
-      this.newTask.itemList.push({
-        itemTitle: 'Новая задача',
-        itemStatus: false
-      })
-    },
-    onChangeItemTitle(item_index, e) {
-      this.deleteLostChanges();
-      this.historyOfChanges.arrayOfChanges.push({
-        type: 'changeItemTitle',
-        index: item_index,
-        oldValue: this.newTask.itemList[item_index].itemTitle,
-        newValue: e
-      });
-      this.historyOfChanges.pointerOfCurrentChange++;
+        case 'addItem':
+          this.historyOfChanges.arrayOfChanges.push({
+            type: 'addItem'
+          });
+          this.newTask.itemList.push({
+            itemTitle: 'Новая задача',
+            itemStatus: false
+          })
+          break;
 
-      this.newTask.itemList[item_index].itemTitle = e;
-    },
-    onInputItemStatus(item_index, e) {
-      this.deleteLostChanges();
-      this.historyOfChanges.arrayOfChanges.push({
-        type: 'changeItemStatus',
-        index: item_index,
-        oldValue: this.newTask.itemList[item_index].itemStatus,
-        newValue: e
-      });
-      this.historyOfChanges.pointerOfCurrentChange++;
+        case 'changeItemTitle':
+          this.historyOfChanges.arrayOfChanges.push({
+            type: 'changeItemTitle',
+            index: item_index,
+            oldValue: this.newTask.itemList[item_index].itemTitle,
+            newValue: e
+          });
+          this.newTask.itemList[item_index].itemTitle = e;
+          break;
 
-      this.newTask.itemList[item_index].itemStatus = e;
-    },
-    onClickDeleteItem(item_index) {
-      if (item_index !== -1) {
-        this.deleteLostChanges();
-        this.historyOfChanges.arrayOfChanges.push({
-          type: 'deleteItem',
-          index: item_index,
-          oldValue: this.newTask.itemList[item_index]
-        });
-        this.historyOfChanges.pointerOfCurrentChange++;
+        case 'changeItemStatus':
+          this.historyOfChanges.arrayOfChanges.push({
+            type: 'changeItemStatus',
+            index: item_index,
+            oldValue: this.newTask.itemList[item_index].itemStatus,
+            newValue: e
+          });
+          this.newTask.itemList[item_index].itemStatus = e;
+          break;
 
-        this.newTask.itemList.splice(item_index, 1);
+        case 'deleteItem':
+          if (item_index !== -1) {
+            this.deleteLostChanges();
+            this.historyOfChanges.arrayOfChanges.push({
+              type: 'deleteItem',
+              index: item_index,
+              oldValue: this.newTask.itemList[item_index]
+            });
+            this.newTask.itemList.splice(item_index, 1);
+            break;
+          }
       }
+      this.historyOfChanges.pointerOfCurrentChange++;
     },
     onClickResetChanges() {
       if (this.historyOfChanges.pointerOfCurrentChange === 0) {
