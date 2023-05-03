@@ -2,34 +2,40 @@
   <div>
     <v-container>
       <v-row class="mb-1">
-        <v-btn
-            class="mr-4"
-            icon
-            @click="onClickAddTask"
-        >
+        <!--добавить новое задание-->
+        <v-btn class="mr-4"
+               icon
+               @click="onClickAddTask">
           <v-icon size="35">mdi-plus-circle-outline</v-icon>
         </v-btn>
+
+        <!--редактировать задание-->
         <v-btn icon
                class="mr-4"
                :disabled="!isValidChosenTaskIndex"
-               @click="showEditDialog = true"
-        >
+               @click="showEditDialog = true">
           <v-icon size="35">mdi-pencil</v-icon>
           <v-dialog v-model="showEditDialog"
-                    width="75%"
-          >
+                    width="75%">
             <edit-task :indexForEditing="chosenTaskIndex"
                        @closeEditDialog="showEditDialog = false"
-                       @saveChanges="onClickSaveChanges(chosenTaskIndex, $event)"
                        :key="showEditDialog">
             </edit-task>
           </v-dialog>
         </v-btn>
+
+        <!--удалить задание-->
         <v-btn icon
                :disabled="!isValidChosenTaskIndex"
-               @click="deleteTaskWithIndex(chosenTaskIndex)"
-        >
+               @click="showDeleteDialog = true">
           <v-icon size="35">mdi-close-circle-outline</v-icon>
+          <v-dialog v-model="showDeleteDialog" width="auto">
+            <delete-task :index-for-deleting="chosenTaskIndex"
+                         @closeDeleteDialog="showDeleteDialog=false"
+                         :key="showDeleteDialog"
+            >
+            </delete-task>
+          </v-dialog>
         </v-btn>
       </v-row>
     </v-container>
@@ -46,15 +52,14 @@
           @click="onClickTask(index)"
           :class="rowStyle(index)">
         <td class="font-weight-bold text-subtitle-1 title-column">{{ task.title }}</td>
-        <!--Список задач-->
+        <!--список задач-->
         <td class="items-column">
-          <!--Если список задач длинный, сокращаем до первых трёх элементов-->
-          <div v-if="task.itemList.length > 5">
+          <!--если список задач длинный, сокращаем до первых трёх элементов-->
+          <div v-if="task.itemList.length > 7">
             <v-container v-for="(item, item_index) in task.itemList.slice(0,3)" :key="item_index">
               <v-row>
                 <v-simple-checkbox :value="item.itemStatus"
-                                   @input="onInputItemStatus(index, item_index, $event)"
-                                   color="black">
+                                   @input="onInputItemStatus(index, item_index, $event)">
                 </v-simple-checkbox>
                 <div class="text-justify item-title-container">
                   <p class="my-1 ml-2">{{ item.itemTitle }}</p>
@@ -67,7 +72,9 @@
               <v-tooltip bottom attach>
                 <template v-slot:activator="{ on, attrs }">
                   <div v-bind="attrs"
-                       v-on="on">
+                       v-on="on"
+                       class="ml-5"
+                  >
                     ...
                   </div>
                 </template>
@@ -91,10 +98,7 @@
             >
               <v-row>
                 <v-simple-checkbox :value="item.itemStatus"
-                                   @input="onInputItemStatus(index, item_index, $event)"
-                                   color="black"
-
-                ></v-simple-checkbox>
+                                   @input="onInputItemStatus(index, item_index, $event)"></v-simple-checkbox>
                 <div class="text-justify item-title-container">
                   <p class="my-1 ml-2">{{ item.itemTitle }}</p>
                 </div>
@@ -110,49 +114,30 @@
 
 <script>
 import EditTask from "@/components/EditTask";
+import DeleteTask from "@/components/DeleteTask";
 
 export default {
   name: "CurrentTaskList",
   components: {
+    DeleteTask,
     EditTask
   },
   data() {
     return {
       chosenTaskIndex: -1,
-      showEditDialog: false
+      showEditDialog: false,
+      showDeleteDialog: false
     }
   },
   computed: {
     isValidChosenTaskIndex() {
       return !(this.chosenTaskIndex === -1 || this.chosenTaskIndex >= this.taskList.length);
     },
-    taskProp() {
-      if (this.taskList.length === 0 || !this.isValidChosenTaskIndex) {
-        return {
-          task: {
-            title: 'Not found',
-            itemList: []
-          }
-        }
-      } else {
-        return {
-          task: {
-            title: this.taskList[this.chosenTaskIndex].title,
-            itemList: this.taskList[this.chosenTaskIndex].itemList
-          }
-        }
-      }
-    },
     taskList() {
       return this.$store.getters.TASK_LIST;
     }
   },
   methods: {
-    deleteTaskWithIndex(index) {
-      this.$store.commit('DELETE_TASK_BY_INDEX', {
-        indexForDeleting: index
-      });
-    },
     onClickTask(index) {
       this.chosenTaskIndex = index;
     },

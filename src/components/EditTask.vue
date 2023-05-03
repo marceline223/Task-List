@@ -12,11 +12,11 @@
         </v-row>
       </v-container>
 
-      <!--ЗАГОЛОВОК ЗАДАЧИ-->
+      <!--заголовок задачи-->
       <v-container>
         <v-row>
           <div class="mx-4 my-5">Задание:</div>
-          <v-text-field :value="newTitle"
+          <v-text-field :value="newTask.title"
                         @change="onChangeTitle"
                         type="input"
                         clearable>
@@ -30,13 +30,13 @@
 
           <!--добавить новую задачу-->
           <v-btn icon class="mx-2"
-                 @click="onClickAddItemButton">
+                 @click="onClickAddItem">
             <v-icon size="35"> mdi-plus-circle-outline</v-icon>
           </v-btn>
 
           <!--удалить выбранную задачу-->
           <v-btn icon class="mx-2"
-                 @click="onClickDeleteItemButton(chosenItemIndex)"
+                 @click="onClickDeleteItem(chosenItemIndex)"
                  :disabled="chosenItemIndex === -1">
             <v-icon size="35"> mdi-close-circle-outline</v-icon>
           </v-btn>
@@ -52,7 +52,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr v-for="(item, item_index) in newItemList"
+        <tr v-for="(item, item_index) in newTask.itemList"
             :key="item_index"
             @click="onClickItem(item_index)"
             :class="rowStyle(item_index)">
@@ -92,7 +92,7 @@
           </v-btn>
 
           <!--сохранить изменения-->
-          <v-btn @click="onClickSaveButton" class="ma-5" :disabled="emptyItemTitles">Сохранить</v-btn>
+          <v-btn @click="onClickSave" class="ma-5" :disabled="emptyItemTitles">Сохранить</v-btn>
 
           <!--отменить все изменения-->
           <v-btn @click="onClickCloseDialog" class="ma-5">Отмена</v-btn>
@@ -110,8 +110,10 @@ export default {
   },
   data() {
     return {
-      newTitle: '',
-      newItemList: [],
+      newTask: {
+        title: '',
+        itemList: [],
+      },
       chosenItemIndex: -1,
       historyOfChanges: {
         arrayOfChanges: [],
@@ -120,17 +122,17 @@ export default {
     }
   },
   beforeMount() {
-    this.newTitle = this.task.title;
+    this.newTask.title = this.task.title;
 
     //это необходимо, чтобы избежать реактивности массивов и сделать просто копию
-    this.newItemList = JSON.parse(JSON.stringify(this.task.itemList));
+    this.newTask.itemList = JSON.parse(JSON.stringify(this.task.itemList));
   },
   computed: {
     task() {
       return this.$store.getters.TASK_BY_ID(this.indexForEditing);
     },
     emptyItemTitles() {
-      for (let item of this.newItemList) {
+      for (let item of this.newTask.itemList) {
         if (!item.itemTitle) {
           return true;
         }
@@ -149,76 +151,104 @@ export default {
     }
   },
   methods: {
+    onClickItem(index) {
+      this.chosenItemIndex = index;
+    },
+    onClickCloseDialog() {
+      //при закрытии все несохраненные изменения сбрасываются
+      this.$emit('closeEditDialog');
+    },
+    onClickSave() {
+      this.$store.commit('SET_TASK_BY_INDEX', {
+        indexForSetting: this.indexForEditing,
+        task: this.newTask
+      });
+      this.$emit('closeEditDialog');
+    },
+
     onChangeTitle(e) {
       this.deleteLostChanges();
       this.historyOfChanges.arrayOfChanges.push({
         type: 'changeTitle',
-        oldValue: this.newTitle,
+        oldValue: this.newTask.title,
         newValue: e
       });
       this.historyOfChanges.pointerOfCurrentChange++;
 
-      this.newTitle = e;
+      this.newTask.title = e;
+    },
+    onClickAddItem() {
+      this.deleteLostChanges();
+      this.historyOfChanges.arrayOfChanges.push({
+        type: 'addItem'
+      });
+      this.historyOfChanges.pointerOfCurrentChange++;
+
+      this.newTask.itemList.push({
+        itemTitle: 'Новая задача',
+        itemStatus: false
+      })
     },
     onChangeItemTitle(item_index, e) {
       this.deleteLostChanges();
       this.historyOfChanges.arrayOfChanges.push({
         type: 'changeItemTitle',
         index: item_index,
-        oldValue: this.newItemList[item_index].itemTitle,
+        oldValue: this.newTask.itemList[item_index].itemTitle,
         newValue: e
       });
       this.historyOfChanges.pointerOfCurrentChange++;
 
-      this.newItemList[item_index].itemTitle = e;
+      this.newTask.itemList[item_index].itemTitle = e;
     },
     onInputItemStatus(item_index, e) {
       this.deleteLostChanges();
       this.historyOfChanges.arrayOfChanges.push({
         type: 'changeItemStatus',
         index: item_index,
-        oldValue: this.newItemList[item_index].itemStatus,
+        oldValue: this.newTask.itemList[item_index].itemStatus,
         newValue: e
       });
       this.historyOfChanges.pointerOfCurrentChange++;
 
-      this.newItemList[item_index].itemStatus = e;
+      this.newTask.itemList[item_index].itemStatus = e;
     },
-    onClickDeleteItemButton(item_index) {
+    onClickDeleteItem(item_index) {
       if (item_index !== -1) {
         this.deleteLostChanges();
         this.historyOfChanges.arrayOfChanges.push({
           type: 'deleteItem',
           index: item_index,
-          oldValue: this.newItemList[item_index]
+          oldValue: this.newTask.itemList[item_index]
         });
         this.historyOfChanges.pointerOfCurrentChange++;
 
-        this.newItemList.splice(item_index, 1);
+        this.newTask.itemList.splice(item_index, 1);
       }
     },
+
     backUpVersion(type, pointer) {
       let change = this.historyOfChanges.arrayOfChanges[pointer];
       if (change.type === 'changeItemStatus') {
-        this.newItemList[change.index].itemStatus = (type === 'prev') ? change.oldValue : change.newValue;
+        this.newTask.itemList[change.index].itemStatus = (type === 'prev') ? change.oldValue : change.newValue;
       } else if (change.type === 'changeTitle') {
-        this.newTitle = (type === 'prev') ? change.oldValue : change.newValue;
+        this.newTask.title = (type === 'prev') ? change.oldValue : change.newValue;
       } else if (change.type === 'changeItemTitle') {
-        this.newItemList[change.index].itemTitle = (type === 'prev') ? change.oldValue : change.newValue;
+        this.newTask.itemList[change.index].itemTitle = (type === 'prev') ? change.oldValue : change.newValue;
       } else if (change.type === 'addItem') {
         if (type === 'prev') {
-          this.newItemList.pop();
+          this.newTask.itemList.pop();
         } else {
-          this.newItemList.push({
+          this.newTask.itemList.push({
             itemTitle: 'Новая задача',
             itemStatus: false
           })
         }
       } else if (change.type === 'deleteItem') {
         if (type === 'prev') {
-          this.newItemList.splice(change.index, 0, change.oldValue);
+          this.newTask.itemList.splice(change.index, 0, change.oldValue);
         } else {
-          this.newItemList.splice(change.index, 1);
+          this.newTask.itemList.splice(change.index, 1);
         }
       }
     },
@@ -239,38 +269,6 @@ export default {
     repeatChange() {
       this.backUpVersion('next', this.historyOfChanges.pointerOfCurrentChange);
       this.historyOfChanges.pointerOfCurrentChange++;
-    },
-    onClickSaveButton() {
-      this.$emit('saveChanges', {
-        task: {
-          title: this.newTitle,
-          itemList: this.newItemList
-        }
-      })
-    },
-    onClickAddItemButton() {
-      this.deleteLostChanges();
-      this.historyOfChanges.arrayOfChanges.push({
-        type: 'addItem'
-      });
-      this.historyOfChanges.pointerOfCurrentChange++;
-
-      this.newItemList.push({
-        itemTitle: 'Новая задача',
-        itemStatus: false
-      })
-    },
-    onClickCloseDialog() {
-      //при закрытии все несохраненные изменения сбрасываются
-      this.$emit('closeEditDialog', {
-        task: {
-          title: this.task.title,
-          itemList: this.task.itemList
-        }
-      });
-    },
-    onClickItem(index) {
-      this.chosenItemIndex = index;
     },
     rowStyle(index) {
       if (index === this.chosenItemIndex) {

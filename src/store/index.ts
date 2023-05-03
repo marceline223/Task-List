@@ -32,7 +32,16 @@ export default new Vuex.Store({
           {
             itemTitle: 'Выкинуть мусор',
             itemStatus: true
-          }]
+          },
+          {
+            itemTitle: 'Разобрать мусор на балконе',
+            itemStatus: false
+          },
+          {
+            itemTitle: 'Отсортировать отходы',
+            itemStatus: true
+          }
+        ]
       },
       {
         title: 'Подготовиться к экзамену',
