@@ -39,12 +39,14 @@
       </v-row>
     </v-container>
     <v-simple-table>
+
       <thead>
       <tr>
         <th class="text-h6 black--text">Задания</th>
         <th class="text-h6 black--text">Задачи</th>
       </tr>
       </thead>
+
       <tbody>
       <!--список задач-->
       <tr v-for="(task, index) in taskList"
@@ -52,9 +54,9 @@
           @click="onClickTask(index)"
           :class="rowStyle(index)">
         <td class="font-weight-bold text-subtitle-1 title-column">{{ task.title }}</td>
-        <td class="items-column">
+        <td class="items-column py-3">
           <!--если список задач длинный, сокращаем до первых трёх элементов-->
-          <div v-if="task.itemList.length > 7">
+          <div v-if="task.itemList.length > 9">
             <v-container v-for="(item, item_index) in task.itemList.slice(0,3)" :key="item_index">
               <v-row>
                 <v-simple-checkbox :value="item.itemStatus"
