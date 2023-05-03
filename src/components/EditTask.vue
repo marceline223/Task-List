@@ -179,11 +179,11 @@ export default {
       this.$emit('closeEditDialog');
     },
 
-    onChange(type, item_index, e) {
+    onChange(typeOfChange, item_index, e) {
       //метод-оболочка для всех типов изменений
       this.deleteLostChanges(); //удалить все изменения после текущего состояния
 
-      switch (type) {
+      switch (typeOfChange) {
         case 'changeTitle':
           this.historyOfChanges.arrayOfChanges.push({
             type: 'changeTitle',
@@ -293,8 +293,6 @@ export default {
     rowStyle(index) {
       if (index === this.chosenItemIndex) {
         return 'grey lighten-2'
-      } else {
-        return ''
       }
     }
   }
