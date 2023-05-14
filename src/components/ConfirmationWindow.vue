@@ -1,6 +1,6 @@
 <template>
   <v-card class="pa-3">
-    <v-card-title>Подтвердите действие</v-card-title>
+    <v-card-title class="mb-3">Подтвердите действие</v-card-title>
     <v-card-text>
       Вы действительно хотите {{action}}?
       {{description}}

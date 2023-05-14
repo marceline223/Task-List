@@ -39,7 +39,6 @@
       </v-row>
     </v-container>
     <v-simple-table>
-
       <thead>
       <tr>
         <th class="text-h6 black--text">Задания</th>
@@ -53,7 +52,7 @@
           :key="index"
           @click="onClickTask(index)"
           :class="rowStyle(index)">
-        <td class="font-weight-bold text-subtitle-1 title-column">{{ task.title }}</td>
+        <td class="font-weight-bold text-subtitle-1 title-column">{{ task.taskTitle }}</td>
         <td class="items-column py-3">
           <!--если список задач длинный, сокращаем до первых трёх элементов-->
           <div v-if="task.itemList.length > 9">
@@ -114,6 +113,8 @@
 <script>
 import EditTask from "@/components/EditTask";
 import ConfirmationWindow from "@/components/ConfirmationWindow";
+import gql from 'graphql-tag';
+import {mapMutations, mapState} from "vuex";
 
 export default {
   name: "CurrentTaskList",
@@ -129,14 +130,13 @@ export default {
     }
   },
   computed: {
+    ...mapState(['taskList']),
     isValidChosenTaskIndex() {
       return !(this.chosenTaskIndex === -1 || this.chosenTaskIndex >= this.taskList.length);
-    },
-    taskList() {
-      return this.$store.getters.TASK_LIST;
     }
   },
   methods: {
+    ...mapMutations(['UPDATE_TASK_LIST']),
     onClickTask(index) {
       this.chosenTaskIndex = index;
     },
@@ -160,6 +160,24 @@ export default {
         itemIndex: item_index,
         status: e
       });
+    }
+  },
+  apollo: {
+    taskList: {
+      query: gql`
+      query Query {
+        taskList {
+          taskTitle
+          itemList {
+            itemTitle
+            itemStatus
+          }
+        }
+      }
+    `,
+      update(data) {
+        this.$store.commit('UPDATE_TASK_LIST', data.taskList);
+      },
     }
   }
 }

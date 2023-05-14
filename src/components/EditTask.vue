@@ -16,7 +16,7 @@
       <v-container>
         <v-row>
           <div class="mx-4 my-5">Задание:</div>
-          <v-text-field :value="newTask.title"
+          <v-text-field :value="newTask.taskTitle"
                         @change="onChange('changeTitle', null, $event)"
                         type="input"
                         clearable>
@@ -126,7 +126,7 @@ export default {
   data() {
     return {
       newTask: {
-        title: '',
+        taskTitle: '',
         itemList: [],
       },
       chosenItemIndex: -1,
@@ -138,7 +138,7 @@ export default {
     }
   },
   beforeMount() {
-    this.newTask.title = this.task.title;
+    this.newTask.taskTitle = this.task.taskTitle;
 
     //это необходимо, чтобы избежать реактивности массивов и сделать просто копию
     this.newTask.itemList = JSON.parse(JSON.stringify(this.task.itemList));
@@ -189,10 +189,10 @@ export default {
         case 'changeTitle':
           this.historyOfChanges.arrayOfChanges.push({
             type: 'changeTitle',
-            oldValue: this.newTask.title,
+            oldValue: this.newTask.taskTitle,
             newValue: e
           });
-          this.newTask.title = e;
+          this.newTask.taskTitle = e;
           break;
 
         case 'addItem':
@@ -254,7 +254,7 @@ export default {
       if (change.type === 'changeItemStatus') {
         this.newTask.itemList[change.index].itemStatus = (type === 'prev') ? change.oldValue : change.newValue;
       } else if (change.type === 'changeTitle') {
-        this.newTask.title = (type === 'prev') ? change.oldValue : change.newValue;
+        this.newTask.taskTitle = (type === 'prev') ? change.oldValue : change.newValue;
       } else if (change.type === 'changeItemTitle') {
         this.newTask.itemList[change.index].itemTitle = (type === 'prev') ? change.oldValue : change.newValue;
       } else if (change.type === 'addItem') {

@@ -1,9 +1,10 @@
 <template>
   <v-app>
-    <v-main class="v-main-container">
-      <h2 class="my-4">Список заданий</h2>
-      <current-task-list></current-task-list>
-    </v-main>
+<!--    <v-main class="v-main-container">-->
+<!--      <h2 class="my-4">Список заданий</h2>-->
+<!--      <current-task-list></current-task-list>-->
+<!--    </v-main>-->
+    <current-task-list></current-task-list>
   </v-app>
 </template>
 

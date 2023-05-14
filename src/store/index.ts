@@ -3,71 +3,82 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
+interface Item {
+  itemTitle: string;
+  itemStatus: boolean;
+}
+
+interface Task {
+  title: string;
+  itemList: Item[];
+}
+
 export default new Vuex.Store({
   state: {
-    taskList: [
-      {
-        title: 'Убраться дома',
-        itemList: [
-          {
-            itemTitle: 'Пропылесосить',
-            itemStatus: true
-          },
-          {
-            itemTitle: 'Разгрузить стиральную машину',
-            itemStatus: false
-          },
-          {
-            itemTitle: 'Помыть окна',
-            itemStatus: true
-          },
-          {
-            itemTitle: 'Протереть зеркало',
-            itemStatus: false
-          },
-          {
-            itemTitle: 'Разобрать сушилку',
-            itemStatus: false
-          },
-          {
-            itemTitle: 'Выкинуть мусор',
-            itemStatus: true
-          },
-          {
-            itemTitle: 'Разобрать мусор на балконе',
-            itemStatus: false
-          },
-          {
-            itemTitle: 'Отсортировать отходы',
-            itemStatus: true
-          }
-        ]
-      },
-      {
-        title: 'Подготовиться к экзамену',
-        itemList: [
-          {
-            itemTitle: 'Пересмотреть последнюю лекцию',
-            itemStatus: false
-          },
-          {
-            itemTitle: 'Потренировать решение задач',
-            itemStatus: false
-          },
-          {
-            itemTitle: 'Просмотреть конспект',
-            itemStatus: false
-          }]
-      },
-      {
-        title: 'ДР Полины',
-        itemList: [
-          {
-            itemTitle: 'Купить подарок',
-            itemStatus: true
-          }]
-      }
-    ]
+    // taskList: [
+    //   {
+    //     title: 'Убраться дома',
+    //     itemList: [
+    //       {
+    //         itemTitle: 'Пропылесосить',
+    //         itemStatus: true
+    //       },
+    //       {
+    //         itemTitle: 'Разгрузить стиральную машину',
+    //         itemStatus: false
+    //       },
+    //       {
+    //         itemTitle: 'Помыть окна',
+    //         itemStatus: true
+    //       },
+    //       {
+    //         itemTitle: 'Протереть зеркало',
+    //         itemStatus: false
+    //       },
+    //       {
+    //         itemTitle: 'Разобрать сушилку',
+    //         itemStatus: false
+    //       },
+    //       {
+    //         itemTitle: 'Выкинуть мусор',
+    //         itemStatus: true
+    //       },
+    //       {
+    //         itemTitle: 'Разобрать мусор на балконе',
+    //         itemStatus: false
+    //       },
+    //       {
+    //         itemTitle: 'Отсортировать отходы',
+    //         itemStatus: true
+    //       }
+    //     ]
+    //   },
+    //   {
+    //     title: 'Подготовиться к экзамену',
+    //     itemList: [
+    //       {
+    //         itemTitle: 'Пересмотреть последнюю лекцию',
+    //         itemStatus: false
+    //       },
+    //       {
+    //         itemTitle: 'Потренировать решение задач',
+    //         itemStatus: false
+    //       },
+    //       {
+    //         itemTitle: 'Просмотреть конспект',
+    //         itemStatus: false
+    //       }]
+    //   },
+    //   {
+    //     title: 'ДР Полины',
+    //     itemList: [
+    //       {
+    //         itemTitle: 'Купить подарок',
+    //         itemStatus: true
+    //       }]
+    //   }
+    // ]
+    taskList: [] as Task[]
   },
   getters: {
     TASK_LIST: state => {
@@ -83,6 +94,9 @@ export default new Vuex.Store({
     },
     SET_STATUS_OF_ITEM: (state, payload) => {
       state.taskList[payload.taskIndex].itemList[payload.itemIndex].itemStatus = payload.status;
+    },
+    UPDATE_TASK_LIST: (state, payload) => {
+      state.taskList = payload;
     },
     ADD_NEW_TASK: (state) => {
       state.taskList.push({
