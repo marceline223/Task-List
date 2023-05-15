@@ -16,7 +16,8 @@
                @click="showEditDialog = true">
           <v-icon size="35">mdi-pencil</v-icon>
           <v-dialog v-model="showEditDialog"
-                    width="75%">
+                    width="75%"
+                    persistent>
             <edit-task :indexForEditing="chosenTaskIndex"
                        @closeEditDialog="showEditDialog = false"
                        :key="showEditDialog">
@@ -134,7 +135,7 @@ export default {
     isValidChosenTaskIndex() {
       return !(this.chosenTaskIndex === -1 || this.chosenTaskIndex >= this.taskList.length);
     },
-    taskList(){
+    taskList() {
       return this.$store.state.taskList;
     }
   },
