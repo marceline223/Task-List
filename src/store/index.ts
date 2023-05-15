@@ -4,19 +4,11 @@ import Vuex from 'vuex'
 import createPersistedState from 'vuex-persistedstate';
 import gql from "graphql-tag";
 import apolloProvider from '../client/apollo'
+import { Task, Item } from './store-types';
 
 
 Vue.use(Vuex)
 
-interface Item {
-    itemTitle: string;
-    itemStatus: boolean;
-}
-
-interface Task {
-    title: string;
-    itemList: Item[];
-}
 
 export default new Vuex.Store({
     state: {
