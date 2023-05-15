@@ -34,7 +34,7 @@ export default new Vuex.Store({
         },
         ADD_NEW_TASK: (state) => {
             state.taskList.push({
-                title: 'Новое задание',
+                taskTitle: 'Новое задание',
                 itemList: [],
             })
         },

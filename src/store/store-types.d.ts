@@ -4,6 +4,6 @@ export interface Item {
 }
 
 export interface Task {
-    title: string;
+    taskTitle: string;
     itemList: Item[];
 }
