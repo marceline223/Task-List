@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "start client": "vue-cli-service serve",
+    "start server": "node src/server/server.mjs",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint",
-    "start server": "node src/server/server.mjs"
+    "lint": "vue-cli-service lint"
   },
   "dependencies": {
     "@apollo/server": "^4.7.1",
@@ -19,7 +19,8 @@
     "vue": "^2.6.14",
     "vue-apollo": "^3.1.0",
     "vuetify": "^2.6.0",
-    "vuex": "^3.6.2"
+    "vuex": "^3.6.2",
+    "vuex-persistedstate": "^4.1.0"
   },
   "devDependencies": {
     "@graphql-tools/mock": "^8.7.20",

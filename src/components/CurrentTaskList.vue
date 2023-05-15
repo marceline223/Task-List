@@ -133,7 +133,13 @@ export default {
     ...mapState(['taskList']),
     isValidChosenTaskIndex() {
       return !(this.chosenTaskIndex === -1 || this.chosenTaskIndex >= this.taskList.length);
+    },
+    taskList(){
+      return this.$store.state.taskList;
     }
+  },
+  mounted() {
+    this.$store.dispatch('fetchTaskList');
   },
   methods: {
     ...mapMutations(['UPDATE_TASK_LIST']),
@@ -145,7 +151,7 @@ export default {
     },
     onClickAcceptDeleting() {
       this.$store.commit('DELETE_TASK_BY_INDEX', {
-        indexForDeleting: this.indexForDeleting
+        indexForDeleting: this.chosenTaskIndex
       });
       this.showDeleteDialog = false;
     },
@@ -160,24 +166,6 @@ export default {
         itemIndex: item_index,
         status: e
       });
-    }
-  },
-  apollo: {
-    taskList: {
-      query: gql`
-      query Query {
-        taskList {
-          taskTitle
-          itemList {
-            itemTitle
-            itemStatus
-          }
-        }
-      }
-    `,
-      update(data) {
-        this.$store.commit('UPDATE_TASK_LIST', data.taskList);
-      },
     }
   }
 }
