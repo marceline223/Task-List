@@ -113,7 +113,7 @@
 <script>
 import EditTask from "@/components/EditTask";
 import ConfirmationWindow from "@/components/ConfirmationWindow";
-import gql from 'graphql-tag';
+
 import {mapMutations, mapState} from "vuex";
 
 export default {
@@ -153,6 +153,7 @@ export default {
       this.$store.commit('DELETE_TASK_BY_INDEX', {
         indexForDeleting: this.chosenTaskIndex
       });
+      // this.$store.dispatch('deleteTaskByIndex', this.chosenTaskIndex);
       this.showDeleteDialog = false;
     },
     rowStyle(index) {
@@ -166,7 +167,11 @@ export default {
         itemIndex: item_index,
         status: e
       });
+    },
+    update(data) {
+      this.$store.commit('UPDATE_TASK_LIST', data.taskList);
     }
+
   }
 }
 </script>
