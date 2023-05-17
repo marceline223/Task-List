@@ -7,7 +7,11 @@ import casual from "casual";
 
 const typeDefs = `
   type Query {
-    taskList: [Task]
+    getTaskList: [Task]
+    deleteTaskByIndex: String
+    addNewTask: String
+    setTaskByIndex: String
+    setStatusOfItem: String
   }
 
   type Task {
@@ -23,7 +27,10 @@ const typeDefs = `
 
 const resolvers = {
     Query: {
-        resolved: () => 'Resolved',
+        deleteTaskByIndex: () => 'The task has successfully deleted.',
+        addNewTask: () => 'The new task has successfully added.',
+        setTaskByIndex: () => 'The task has successfully updated.',
+        setStatusOfItem: () => 'The status of item has successfully updated.'
     },
 };
 
@@ -45,17 +52,17 @@ function generateTask() {
 
 const mocks = {
     Query: () => ({
-        taskList: () => new Array(6).fill().map(generateTask),
+        getTaskList: () => new Array(6).fill().map(generateTask)
     }),
 };
 
 
-
 const server = new ApolloServer({
     schema: addMocksToSchema({
-        schema: makeExecutableSchema({typeDefs}),
+        schema: makeExecutableSchema({typeDefs, resolvers}),
         mocks: mocks,
-    }),
+        preserveResolvers: true
+    })
 });
 
 const {url} = await startStandaloneServer(server, {listen: {port: 4000}});

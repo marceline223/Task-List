@@ -2,10 +2,10 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 import createPersistedState from 'vuex-persistedstate';
-import gql from "graphql-tag";
-import apolloProvider from '../client/apollo'
-import { Task, Item } from './store-types';
 
+import { Task, Item } from './store-types';
+import {GET_TASK_LIST} from "@/graphql/queries";
+import {apolloClient} from '../client/apollo'
 
 Vue.use(Vuex)
 
@@ -36,7 +36,7 @@ export default new Vuex.Store({
             state.taskList.push({
                 taskTitle: 'Новое задание',
                 itemList: [],
-            })
+            });
         },
         DELETE_TASK_BY_INDEX: (state, payload) => {
             state.taskList.splice(payload.indexForDeleting, 1);
@@ -46,31 +46,16 @@ export default new Vuex.Store({
     actions: {
         async fetchTaskList({ commit }) {
             // Проверяем наличие данных в localStorage
-            const storedTaskList = localStorage.getItem('taskList');
-            if (storedTaskList) {
-                // Если данные есть в localStorage, загружаем их в состояние Vuex
-                commit('setTaskList', JSON.parse(storedTaskList));
-            } else {
-                // Если данных нет в localStorage, выполняем запрос к Apollo Mocking
+            const storedTaskList = localStorage.getItem('vuex');
+            if (!storedTaskList) {
+                // Если данных нет, выполняем запрос к Apollo Mocking
                 try {
-                    const { data } = await apolloProvider.query({
-                        query: gql`
-                          query Query {
-                            taskList {
-                              taskTitle
-                              itemList {
-                                itemTitle
-                                itemStatus
-                              }
-                            }
-                          }
-                        `,
-                    });
-                    const taskList = data.taskList;
+                    const { data } = await apolloClient.query({query: GET_TASK_LIST});
+                    const taskList = data.getTaskList;
                     // Загружаем полученные данные в состояние Vuex
-                    commit('setTaskList', taskList);
+                    commit('UPDATE_TASK_LIST', taskList);
                     // Сохраняем данные в localStorage
-                    localStorage.setItem('taskList', JSON.stringify(taskList));
+                    localStorage.setItem('vuex', JSON.stringify(taskList));
                 } catch (error) {
                     console.error('Ошибка при загрузке списка задач:', error);
                 }
