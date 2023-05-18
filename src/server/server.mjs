@@ -8,10 +8,15 @@ import casual from "casual";
 const typeDefs = `
   type Query {
     getTaskList: [Task]
-    deleteTaskByIndex: String
-    addNewTask: String
-    setTaskByIndex: String
-    setStatusOfItem: String
+    deleteTaskByIndex: Response
+    addNewTask: Response
+    setTaskByIndex: Response
+    setStatusOfItem: Response
+  }
+  
+  type Response {
+    success: Boolean
+    message: String
   }
 
   type Task {
@@ -27,11 +32,31 @@ const typeDefs = `
 
 const resolvers = {
     Query: {
-        deleteTaskByIndex: () => 'The task has successfully deleted.',
-        addNewTask: () => 'The new task has successfully added.',
-        setTaskByIndex: () => 'The task has successfully updated.',
-        setStatusOfItem: () => 'The status of item has successfully updated.'
-    },
+        deleteTaskByIndex: () => {
+            return {
+                success: true,
+                message: 'The task has successfully deleted.'
+            }
+        },
+        addNewTask: () => {
+            return {
+                success: true,
+                message: 'The new task has successfully added.'
+            }
+        },
+        setTaskByIndex: () => {
+            return {
+                success: true,
+                message: 'The task has successfully updated.'
+            }
+        },
+        setStatusOfItem: () => {
+            return {
+                success: true,
+                message: 'The status of item has successfully updated.'
+            }
+        }
+    }
 };
 
 function generateItem() {
