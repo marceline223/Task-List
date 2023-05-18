@@ -115,8 +115,6 @@
 import EditTask from "@/components/EditTask";
 import ConfirmationWindow from "@/components/ConfirmationWindow";
 
-import {mapMutations, mapState} from "vuex";
-
 export default {
   name: "CurrentTaskList",
   components: {
@@ -131,7 +129,6 @@ export default {
     }
   },
   computed: {
-    ...mapState(['taskList']),
     isValidChosenTaskIndex() {
       return !(this.chosenTaskIndex === -1 || this.chosenTaskIndex >= this.taskList.length);
     },
@@ -143,18 +140,14 @@ export default {
     this.$store.dispatch('fetchTaskList');
   },
   methods: {
-    ...mapMutations(['UPDATE_TASK_LIST']),
     onClickTask(index) {
       this.chosenTaskIndex = index;
     },
     onClickAddTask() {
-      this.$store.commit('ADD_NEW_TASK');
+      this.$store.dispatch('addNewTask');
     },
     onClickAcceptDeleting() {
-      this.$store.commit('DELETE_TASK_BY_INDEX', {
-        indexForDeleting: this.chosenTaskIndex
-      });
-      // this.$store.dispatch('deleteTaskByIndex', this.chosenTaskIndex);
+      this.$store.dispatch('deleteTaskByIndex', this.chosenTaskIndex);
       this.showDeleteDialog = false;
     },
     rowStyle(index) {
@@ -163,16 +156,12 @@ export default {
       }
     },
     onInputItemStatus(task_index, item_index, e) {
-      this.$store.commit('SET_STATUS_OF_ITEM', {
+      this.$store.dispatch('setStatusOfItem', {
         taskIndex: task_index,
         itemIndex: item_index,
-        status: e
+        itemStatus: e
       });
-    },
-    update(data) {
-      this.$store.commit('UPDATE_TASK_LIST', data.taskList);
     }
-
   }
 }
 </script>
