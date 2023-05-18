@@ -10,8 +10,8 @@ import {
     GET_TASK_LIST,
     SET_STATUS_OF_ITEM,
     SET_TASK_BY_INDEX
-} from "@/graphql/queries";
-import {apolloClient} from '@/client/apollo'
+} from "../graphql/queries";
+import {apolloClient} from '../client/apollo'
 
 Vue.use(Vuex)
 

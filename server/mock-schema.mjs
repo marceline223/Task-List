@@ -1,9 +1,4 @@
-import {ApolloServer} from '@apollo/server';
-import {startStandaloneServer} from '@apollo/server/standalone';
-import {addMocksToSchema} from '@graphql-tools/mock';
-import {makeExecutableSchema} from '@graphql-tools/schema';
-
-import casual from "casual";
+import {makeExecutableSchema} from 'graphql-tools';
 
 const typeDefs = `
   type Query {
@@ -59,6 +54,9 @@ const resolvers = {
     }
 };
 
+import casual from "casual";
+
+
 function generateItem() {
     return {
         itemTitle: casual.sentence,
@@ -67,29 +65,19 @@ function generateItem() {
 }
 
 function generateTask() {
-    let itemsCount = Math.floor(Math.random() * 8);
+    let itemsCount = Math.floor(Math.random() * 10);
     return {
         taskTitle: casual.title,
         itemList: new Array(itemsCount).fill().map(generateItem)
     }
 }
 
-
-const mocks = {
+export const mocks = {
     Query: () => ({
         getTaskList: () => new Array(6).fill().map(generateTask)
     }),
 };
 
 
-const server = new ApolloServer({
-    schema: addMocksToSchema({
-        schema: makeExecutableSchema({typeDefs, resolvers}),
-        mocks: mocks,
-        preserveResolvers: true
-    })
-});
+export const schema = makeExecutableSchema({ typeDefs, resolvers });
 
-const {url} = await startStandaloneServer(server, {listen: {port: 4000}});
-
-console.log(`Server listening at: ${url}`);

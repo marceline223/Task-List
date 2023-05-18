@@ -56,7 +56,7 @@
         <td class="font-weight-bold text-subtitle-1 title-column">{{ task.taskTitle }}</td>
         <td class="items-column py-3">
           <!--если список задач длинный, сокращаем до первых трёх элементов-->
-          <div v-if="task.itemList.length > 9">
+          <div v-if="task.itemList.length > 5">
             <v-container v-for="(item, item_index) in task.itemList.slice(0,3)" :key="item_index">
               <v-row>
                 <v-simple-checkbox :value="item.itemStatus"
@@ -168,7 +168,7 @@ export default {
 
 <style>
 .item-title-container {
-  max-width: 95%;
+  max-width: 90%;
 }
 
 .items-column {

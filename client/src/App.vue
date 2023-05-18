@@ -10,7 +10,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import Vuetify from "vuetify"
-import CurrentTaskList from "@/components/CurrentTaskList.vue"
+import CurrentTaskList from "./components/CurrentTaskList.vue"
 
 export default Vue.extend({
   name: 'App',

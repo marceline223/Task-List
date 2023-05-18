@@ -1,0 +1,23 @@
+{
+  "name": "tasklistapp-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.mjs",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start server": "node server.mjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@graphql-tools/mock": "^8.7.20",
+    "@graphql-tools/schema": "^9.0.19"
+  },
+  "dependencies": {
+    "@apollo/server": "^4.7.1",
+    "casual": "^1.6.2",
+    "graphql": "^16.6.0",
+    "graphql-tools": "^8.3.20"
+  }
+}

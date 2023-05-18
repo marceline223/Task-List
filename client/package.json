@@ -4,7 +4,6 @@
   "private": true,
   "scripts": {
     "start client": "vue-cli-service serve",
-    "start server": "node src/server/server.mjs",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
