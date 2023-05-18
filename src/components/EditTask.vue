@@ -174,7 +174,7 @@ export default {
       this.chosenItemIndex = index;
     },
     onClickSave() {
-      this.$store.commit('SET_TASK_BY_INDEX', {
+      this.$store.dispatch('setTaskByIndex', {
         indexForSetting: this.indexForEditing,
         task: this.newTask
       });
