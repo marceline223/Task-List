@@ -12,27 +12,27 @@
         <!--редактировать задание-->
         <v-btn icon
                class="mr-4"
-               :disabled="!isValidChosenTaskIndex"
-               @click="showEditDialog = true">
+               :disabled="!isChosenTaskIndexValid"
+               @click="isEditDialogShown = true">
           <v-icon size="35">mdi-pencil</v-icon>
-          <v-dialog v-model="showEditDialog"
+          <v-dialog v-model="isEditDialogShown"
                     width="75%"
                     persistent>
             <edit-task :indexForEditing="chosenTaskIndex"
-                       @closeEditDialog="showEditDialog = false"
-                       :key="showEditDialog">
+                       @closeEditDialog="isEditDialogShown = false"
+                       :key="isEditDialogShown">
             </edit-task>
           </v-dialog>
         </v-btn>
 
         <!--удалить задание-->
         <v-btn icon
-               :disabled="!isValidChosenTaskIndex"
-               @click="showDeleteDialog = true">
+               :disabled="!isChosenTaskIndexValid"
+               @click="isDeleteDialogShown = true">
           <v-icon size="35">mdi-close-circle-outline</v-icon>
-          <v-dialog v-model="showDeleteDialog" width="50%">
+          <v-dialog v-model="isDeleteDialogShown" width="50%">
             <confirmation-window type="delete"
-                                 @cancel="showDeleteDialog = false"
+                                 @cancel="isDeleteDialogShown = false"
                                  @accept="onClickAcceptDeleting">
             </confirmation-window>
           </v-dialog>
@@ -52,7 +52,7 @@
       <tr v-for="(task, index) in taskList"
           :key="index"
           @click="onClickTask(index)"
-          :class="rowStyle(index)">
+          :class="getRowStyle(index)">
         <td class="font-weight-bold text-subtitle-1 title-column">{{ task.taskTitle }}</td>
         <td class="items-column py-3">
           <!--если список задач длинный, сокращаем до первых трёх элементов-->
@@ -124,12 +124,12 @@ export default {
   data() {
     return {
       chosenTaskIndex: -1,
-      showEditDialog: false,
-      showDeleteDialog: false
+      isEditDialogShown: false,
+      isDeleteDialogShown: false
     }
   },
   computed: {
-    isValidChosenTaskIndex() {
+    isChosenTaskIndexValid() {
       return !(this.chosenTaskIndex === -1 || this.chosenTaskIndex >= this.taskList.length);
     },
     taskList() {
@@ -148,9 +148,9 @@ export default {
     },
     onClickAcceptDeleting() {
       this.$store.dispatch('deleteTaskByIndex', this.chosenTaskIndex);
-      this.showDeleteDialog = false;
+      this.isDeleteDialogShown = false;
     },
-    rowStyle(index) {
+    getRowStyle(index) {
       if (index === this.chosenTaskIndex) {
         return 'grey lighten-2'
       }
