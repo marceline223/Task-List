@@ -10,8 +10,8 @@ import {
     GET_TASK_LIST,
     SET_STATUS_OF_ITEM,
     SET_TASK_BY_INDEX
-} from "../graphql/queries";
-import {apolloClient} from '../client/apollo'
+} from "@/graphql/queries";
+import {apolloClient} from '@/client/apollo'
 
 Vue.use(Vuex)
 
@@ -19,14 +19,6 @@ Vue.use(Vuex)
 export default new Vuex.Store({
     state: {
         taskList: [] as Task[]
-    },
-    getters: {
-        TASK_LIST: state => {
-            return state.taskList;
-        },
-        TASK_BY_ID: state => (index: number) => {
-            return state.taskList[index];
-        }
     },
     mutations: {
         SET_TASK_BY_INDEX: (state, payload) => {
@@ -54,9 +46,9 @@ export default new Vuex.Store({
             // Проверяем наличие данных в localStorage
             const storedTaskList = localStorage.getItem('vuex');
             if (!storedTaskList) {
-                // Если данных нет, выполняем запрос к Apollo Mocking
+                // Если данных нет, выполняем запрос к Apollo
                 try {
-                    const { data } = await apolloClient.query({query: GET_TASK_LIST});
+                    const {data} = await apolloClient.query({query: GET_TASK_LIST});
                     const taskList = data.getTaskList;
                     // Загружаем полученные данные в состояние Vuex
                     commit('UPDATE_TASK_LIST', taskList);
@@ -67,6 +59,7 @@ export default new Vuex.Store({
                 }
             }
         },
+
         async deleteTaskByIndex({commit}, payload) {
             const { data } = await apolloClient.query({query: DELETE_TASK_BY_INDEX});
             if (data.deleteTaskByIndex.success) {
@@ -74,6 +67,7 @@ export default new Vuex.Store({
                 console.log(data.deleteTaskByIndex.message);
             }
         },
+
         async addNewTask({commit}) {
             const { data } = await apolloClient.query({query: ADD_NEW_TASK});
             if (data.addNewTask.success) {
@@ -81,6 +75,7 @@ export default new Vuex.Store({
             }
             console.log(data.addNewTask.message);
         },
+
         async setTaskByIndex({commit}, payload) {
             const { data } = await apolloClient.query({query: SET_TASK_BY_INDEX});
             if (data.setTaskByIndex.success) {
