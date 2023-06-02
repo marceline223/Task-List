@@ -82,7 +82,7 @@
       <tbody>
       <tr
           v-for="(item, itemIndex) in newTask.itemList"
-          :key="item"
+          :key="item.id"
           @click="onClickItem(itemIndex)"
           :class="rowStyle(itemIndex)"
       >
@@ -90,7 +90,7 @@
           <v-simple-checkbox
               @input="onChange('changeItemStatus', itemIndex, $event)"
               :value="item.itemStatus"
-              :key="item.itemStatus"
+              :key="item.id"
           />
         </td>
         <td>
@@ -208,11 +208,15 @@ export default {
       task(state) {
         return state.taskList[this.indexForEditing];
       }
-    })
+    }),
+    ...mapState([
+      'currentItemId'
+    ])
   },
   methods: {
     ...mapActions([
-        'setTaskByIndex'
+        'setTaskByIndex',
+        'increaseItemId'
     ]),
     closeDialog() {
       this.$emit('closeEditDialog');
@@ -246,9 +250,11 @@ export default {
             type: 'addItem'
           });
           this.newTask.itemList.push({
+            id: this.currentItemId,
             itemTitle: 'Новая задача',
             itemStatus: false
-          })
+          });
+          this.increaseItemId();
           break;
 
         case 'changeItemTitle':
@@ -304,9 +310,11 @@ export default {
           this.newTask.itemList.pop();
         } else {
           this.newTask.itemList.push({
+            id: this.currentItemId,
             itemTitle: 'Новая задача',
             itemStatus: false
-          })
+          });
+          this.increaseItemId();
         }
       } else if (change.type === 'deleteItem') {
         if (type === 'prev') {

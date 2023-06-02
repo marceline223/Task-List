@@ -75,7 +75,7 @@
       <!--список задач-->
       <tr
           v-for="(task, index) in taskList"
-          :key="task"
+          :key="task.id"
           @click="onClickTask(index)"
           :class="getRowStyle(index)"
       >
@@ -87,7 +87,7 @@
           <v-container v-if="task.itemList.length > 3">
             <v-row
                 v-for="(item, itemIndex) in task.itemList.slice(0,3)"
-                :key="item"
+                :key="item.id"
             >
                 <v-simple-checkbox
                     :value="item.itemStatus"
@@ -116,7 +116,7 @@
                 <v-container>
                   <v-row
                       v-for="item in task.itemList"
-                      :key="item"
+                      :key="item.id"
                   >
                         {{ item.itemTitle }}
                         <div
@@ -134,7 +134,7 @@
           <v-container v-else>
             <v-row
                 v-for="(item, itemIndex) in task.itemList"
-                :key = "item"
+                :key = "item.id"
             >
 
                 <v-simple-checkbox
@@ -168,7 +168,8 @@ export default {
     return {
       chosenTaskIndex: null,
       isEditDialogShown: false,
-      isDeleteDialogShown: false
+      isDeleteDialogShown: false,
+      currentID: 0
     }
   },
   computed: {
