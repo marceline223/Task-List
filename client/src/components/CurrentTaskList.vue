@@ -3,38 +3,58 @@
     <v-container>
       <v-row class="mb-1">
         <!--добавить новое задание-->
-        <v-btn class="mr-4"
-               icon
-               @click="onClickAddTask">
+        <v-btn
+            icon
+            class="mr-4"
+            @click="onClickAddTask"
+        >
           <v-icon size="35">mdi-plus-circle-outline</v-icon>
         </v-btn>
 
         <!--редактировать задание-->
-        <v-btn icon
-               class="mr-4"
-               :disabled="!isChosenTaskIndexValid"
-               @click="isEditDialogShown = true">
-          <v-icon size="35">mdi-pencil</v-icon>
-          <v-dialog v-model="isEditDialogShown"
-                    width="75%"
-                    persistent>
-            <edit-task :indexForEditing="chosenTaskIndex"
-                       @closeEditDialog="isEditDialogShown = false"
-                       :key="isEditDialogShown">
-            </edit-task>
+        <v-btn
+            icon
+            class="mr-4"
+            :disabled="!isChosenTaskIndexValid"
+            @click="isEditDialogShown = true"
+        >
+          <v-icon
+              size="35"
+          >
+            mdi-pencil
+          </v-icon>
+          <v-dialog
+              v-model="isEditDialogShown"
+              width="75%"
+              persistent
+          >
+            <edit-task
+                :indexForEditing="chosenTaskIndex"
+                @closeEditDialog="onClickSaveChanges"
+            />
           </v-dialog>
         </v-btn>
 
         <!--удалить задание-->
-        <v-btn icon
-               :disabled="!isChosenTaskIndexValid"
-               @click="isDeleteDialogShown = true">
-          <v-icon size="35">mdi-close-circle-outline</v-icon>
-          <v-dialog v-model="isDeleteDialogShown" width="50%">
-            <confirmation-window type="delete"
-                                 @cancel="isDeleteDialogShown = false"
-                                 @accept="onClickAcceptDeleting">
-            </confirmation-window>
+        <v-btn
+            icon
+            :disabled="!isChosenTaskIndexValid"
+            @click="isDeleteDialogShown = true"
+        >
+          <v-icon
+              size="35"
+          >
+            mdi-close-circle-outline
+          </v-icon>
+          <v-dialog
+              v-model="isDeleteDialogShown"
+              width="50%"
+          >
+            <confirmation-window
+                type="delete"
+                @cancel="isDeleteDialogShown = false"
+                @accept="onClickAcceptDeleting"
+            />
           </v-dialog>
         </v-btn>
       </v-row>
@@ -42,68 +62,90 @@
     <v-simple-table>
       <thead>
       <tr>
-        <th class="text-h6 black--text">Задания</th>
-        <th class="text-h6 black--text">Задачи</th>
+        <th class="text-h6 black--text">
+          Задания
+        </th>
+        <th class="text-h6 black--text">
+          Задачи
+        </th>
       </tr>
       </thead>
 
       <tbody>
       <!--список задач-->
-      <tr v-for="(task, index) in taskList"
-          :key="index"
+      <tr
+          v-for="(task, index) in taskList"
+          :key="task"
           @click="onClickTask(index)"
-          :class="getRowStyle(index)">
-        <td class="font-weight-bold text-subtitle-1 title-column">{{ task.taskTitle }}</td>
+          :class="getRowStyle(index)"
+      >
+        <td class="font-weight-bold text-subtitle-1 title-column">
+          {{ task.taskTitle }}
+        </td>
         <td class="items-column py-3">
           <!--если список задач длинный, сокращаем до первых трёх элементов-->
-          <div v-if="task.itemList.length > 5">
-            <v-container v-for="(item, item_index) in task.itemList.slice(0,3)" :key="item_index">
-              <v-row>
-                <v-simple-checkbox :value="item.itemStatus"
-                                   @input="onInputItemStatus(index, item_index, $event)">
-                </v-simple-checkbox>
+          <v-container v-if="task.itemList.length > 3">
+            <v-row
+                v-for="(item, itemIndex) in task.itemList.slice(0,3)"
+                :key="item"
+            >
+                <v-simple-checkbox
+                    :value="item.itemStatus"
+                    @input="onInputItemStatus(index, itemIndex, $event)"
+                />
                 <div class="text-justify item-title-container">
                   <p class="my-1 ml-2">{{ item.itemTitle }}</p>
                 </div>
-              </v-row>
-            </v-container>
+            </v-row>
 
             <!--всплывающая подсказка с остальными элементами-->
             <v-container>
-              <v-tooltip bottom attach>
+              <v-tooltip
+                  bottom
+                  attach
+              >
                 <template v-slot:activator="{ on, attrs }">
-                  <div v-bind="attrs"
-                       v-on="on"
-                       class="ml-5">
+                  <div
+                      v-bind="attrs"
+                      v-on="on"
+                      class="ml-2"
+                  >
                     ...
                   </div>
                 </template>
-                <span>
-                  <div v-for="(item, index) in task.itemList" :key="index">
-                    <v-container>
-                      <v-row>
+                <v-container>
+                  <v-row
+                      v-for="item in task.itemList"
+                      :key="item"
+                  >
                         {{ item.itemTitle }}
-                        <div v-if="item.itemStatus" class="ml-3"> ✓ </div>
-                      </v-row>
-                    </v-container>
-                  </div>
-                </span>
+                        <div
+                            v-if="item.itemStatus"
+                            class="ml-3"
+                        >
+                          ✓
+                        </div>
+                  </v-row>
+                </v-container>
               </v-tooltip>
             </v-container>
-          </div>
+          </v-container>
 
-          <div v-else>
-            <v-container v-for="(item, item_index) in task.itemList"
-                         :key="item_index">
-              <v-row>
-                <v-simple-checkbox :value="item.itemStatus"
-                                   @input="onInputItemStatus(index, item_index, $event)"></v-simple-checkbox>
+          <v-container v-else>
+            <v-row
+                v-for="(item, itemIndex) in task.itemList"
+                :key = "item"
+            >
+
+                <v-simple-checkbox
+                    :value="item.itemStatus"
+                    @input="onInputItemStatus(index, itemIndex, $event)"
+                />
                 <div class="text-justify item-title-container">
                   <p class="my-1 ml-2">{{ item.itemTitle }}</p>
                 </div>
-              </v-row>
-            </v-container>
-          </div>
+            </v-row>
+          </v-container>
         </td>
       </tr>
       </tbody>
@@ -114,6 +156,7 @@
 <script>
 import EditTask from "@/components/EditTask";
 import ConfirmationWindow from "@/components/ConfirmationWindow";
+import {mapState, mapActions} from 'vuex';
 
 export default {
   name: "CurrentTaskList",
@@ -123,44 +166,54 @@ export default {
   },
   data() {
     return {
-      chosenTaskIndex: -1,
+      chosenTaskIndex: null,
       isEditDialogShown: false,
       isDeleteDialogShown: false
     }
   },
   computed: {
     isChosenTaskIndexValid() {
-      return !(this.chosenTaskIndex === -1 || this.chosenTaskIndex >= this.taskList.length);
+      return (this.chosenTaskIndex !== null && this.chosenTaskIndex < this.taskList.length);
     },
-    taskList() {
-      return this.$store.state.taskList;
-    }
+    ...mapState([
+      'taskList'
+    ])
   },
   mounted() {
-    this.$store.dispatch('fetchTaskList');
+    this.fetchTaskList();
   },
   methods: {
+    ...mapActions([
+      'addNewTask',
+      'deleteTaskByIndex',
+      'setStatusOfItem',
+      'fetchTaskList'
+    ]),
+    onClickSaveChanges() {
+      this.isEditDialogShown = false;
+      this.fetchTaskList();
+    },
     onClickTask(index) {
       this.chosenTaskIndex = index;
     },
     onClickAddTask() {
-      this.$store.dispatch('addNewTask');
+      this.addNewTask();
     },
     onClickAcceptDeleting() {
-      this.$store.dispatch('deleteTaskByIndex', this.chosenTaskIndex);
+      this.deleteTaskByIndex(this.chosenTaskIndex);
       this.isDeleteDialogShown = false;
     },
-    getRowStyle(index) {
-      if (index === this.chosenTaskIndex) {
-        return 'grey lighten-2'
-      }
-    },
     onInputItemStatus(task_index, item_index, e) {
-      this.$store.dispatch('setStatusOfItem', {
+      this.setStatusOfItem({
         taskIndex: task_index,
         itemIndex: item_index,
         itemStatus: e
       });
+    },
+    getRowStyle(index) {
+      if (index === this.chosenTaskIndex) {
+        return 'grey lighten-2';
+      }
     }
   }
 }
