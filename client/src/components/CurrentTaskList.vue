@@ -8,7 +8,9 @@
             class="mr-4"
             @click="onClickAddTask"
         >
-          <v-icon size="35">mdi-plus-circle-outline</v-icon>
+          <v-icon size="35">
+            mdi-plus-circle-outline
+          </v-icon>
         </v-btn>
 
         <!--редактировать задание-->
@@ -29,8 +31,8 @@
               persistent
           >
             <edit-task
-                :indexForEditing="chosenTaskIndex"
-                @closeEditDialog="onClickSaveChanges"
+                :index-for-editing="chosenTaskIndex"
+                @close-edit-dialog="onClickSaveChanges"
             />
           </v-dialog>
         </v-btn>
@@ -76,39 +78,38 @@
       <tr
           v-for="(task, index) in taskList"
           :key="task.id"
-          @click="onClickTask(index)"
           :class="getRowStyle(index)"
+          @click="onClickTask(index)"
       >
         <td class="font-weight-bold text-subtitle-1 title-column">
           {{ task.taskTitle }}
         </td>
-        <td class="items-column py-3">
+        <td class="items-column py-1">
           <!--если список задач длинный, сокращаем до первых трёх элементов-->
           <v-container v-if="task.itemList.length > 3">
             <v-row
                 v-for="(item, itemIndex) in task.itemList.slice(0,3)"
                 :key="item.id"
             >
-                <v-simple-checkbox
-                    :value="item.itemStatus"
-                    @input="onInputItemStatus(index, itemIndex, $event)"
-                />
-                <div class="text-justify item-title-container">
-                  <p class="my-1 ml-2">{{ item.itemTitle }}</p>
-                </div>
+              <v-simple-checkbox
+                  :value="item.itemStatus"
+                  @input="onInputItemStatus(index, itemIndex, $event)"
+              />
+              <div class="text-justify item-title-container">
+                <p class="my-1 ml-2">
+                  {{ item.itemTitle }}
+                </p>
+              </div>
             </v-row>
 
             <!--всплывающая подсказка с остальными элементами-->
-            <v-container>
-              <v-tooltip
-                  bottom
-                  attach
-              >
-                <template v-slot:activator="{ on, attrs }">
+
+              <v-tooltip top>
+                <template #activator="{ on, attrs }">
                   <div
                       v-bind="attrs"
+                      class="ml-5 mt-3"
                       v-on="on"
-                      class="ml-2"
                   >
                     ...
                   </div>
@@ -118,32 +119,33 @@
                       v-for="item in task.itemList"
                       :key="item.id"
                   >
-                        {{ item.itemTitle }}
-                        <div
-                            v-if="item.itemStatus"
-                            class="ml-3"
-                        >
-                          ✓
-                        </div>
+                    {{ item.itemTitle }}
+                    <div
+                        v-if="item.itemStatus"
+                        class="ml-3"
+                    >
+                      ✓
+                    </div>
                   </v-row>
                 </v-container>
               </v-tooltip>
             </v-container>
-          </v-container>
+
 
           <v-container v-else>
             <v-row
                 v-for="(item, itemIndex) in task.itemList"
-                :key = "item.id"
+                :key="item.id"
             >
-
-                <v-simple-checkbox
-                    :value="item.itemStatus"
-                    @input="onInputItemStatus(index, itemIndex, $event)"
-                />
-                <div class="text-justify item-title-container">
-                  <p class="my-1 ml-2">{{ item.itemTitle }}</p>
-                </div>
+              <v-simple-checkbox
+                  :value="item.itemStatus"
+                  @input="onInputItemStatus(index, itemIndex, $event)"
+              />
+              <div class="text-justify item-title-container">
+                <p class="my-1 ml-2">
+                  {{ item.itemTitle }}
+                </p>
+              </div>
             </v-row>
           </v-container>
         </td>

@@ -32,9 +32,9 @@
         </div>
         <v-text-field
             :value="newTask.taskTitle"
-            @change="onChange('changeTitle', null, $event)"
             type="text"
             clearable
+            @change="onChange('changeTitle', null, $event)"
         />
       </v-row>
     </v-container>
@@ -53,17 +53,21 @@
             class="mx-2"
             @click="onChange('addItem')"
         >
-          <v-icon size="35"> mdi-plus-circle-outline</v-icon>
+          <v-icon size="35">
+            mdi-plus-circle-outline
+          </v-icon>
         </v-btn>
 
         <!--удалить выбранную задачу-->
         <v-btn
             icon
             class="mx-2"
-            @click="onChange('deleteItem', chosenItemIndex)"
             :disabled="chosenItemIndex === null || chosenItemIndex >= newTask.itemList.length"
+            @click="onChange('deleteItem', chosenItemIndex)"
         >
-          <v-icon size="35"> mdi-close-circle-outline</v-icon>
+          <v-icon size="35">
+            mdi-close-circle-outline
+          </v-icon>
         </v-btn>
       </v-row>
     </v-container>
@@ -75,32 +79,36 @@
     >
       <thead>
       <tr>
-        <th class="text-h6 black--text">Статус</th>
-        <th class="text-h6 black--text">Название</th>
+        <th class="text-h6 black--text">
+          Статус
+        </th>
+        <th class="text-h6 black--text">
+          Название
+        </th>
       </tr>
       </thead>
       <tbody>
       <tr
           v-for="(item, itemIndex) in newTask.itemList"
           :key="item.id"
-          @click="onClickItem(itemIndex)"
           :class="rowStyle(itemIndex)"
+          @click="onClickItem(itemIndex)"
       >
         <td>
           <v-simple-checkbox
-              @input="onChange('changeItemStatus', itemIndex, $event)"
-              :value="item.itemStatus"
               :key="item.id"
+              :value="item.itemStatus"
+              @input="onChange('changeItemStatus', itemIndex, $event)"
           />
         </td>
         <td>
           <v-text-field
               :value="item.itemTitle"
-              @change="onChange('changeItemTitle', itemIndex, $event)"
               type="text"
               dense
               class="pt-2"
               clearable
+              @change="onChange('changeItemTitle', itemIndex, $event)"
           />
         </td>
       </tr>
@@ -113,8 +121,8 @@
         <!--отменить последнее изменение-->
         <v-btn
             class="ma-5"
-            @click="revertChange"
             :disabled="!changeToReverse"
+            @click="revertChange"
         >
           <v-icon>mdi-restore</v-icon>
         </v-btn>
@@ -122,16 +130,16 @@
         <!--вернуть последнее изменение-->
         <v-btn
             class="ma-5"
-            @click="repeatChange"
             :disabled="!changeToRepeat"
+            @click="repeatChange"
         >
           <v-icon>mdi-reload</v-icon>
         </v-btn>
 
         <!--отменить все изменения-->
         <v-btn
-            @click="onClickResetChanges"
             class="ma-5"
+            @click="onClickResetChanges"
         >
           Отмена
           <v-dialog
@@ -139,19 +147,19 @@
               width="50%"
           >
             <confirmation-window
+                :key="showResetDialog"
                 type="reset"
                 @cancel="showResetDialog = false"
                 @accept="closeDialog"
-                :key="showResetDialog"
             />
           </v-dialog>
         </v-btn>
 
         <!--сохранить изменения-->
         <v-btn
-            @click="onClickSave"
             class="ma-5"
             :disabled="emptyItemTitles"
+            @click="onClickSave"
         >
           Сохранить
         </v-btn>
@@ -167,12 +175,16 @@ import {mapState, mapActions} from "vuex";
 
 export default {
   name: "EditTask",
-  props: {
-    indexForEditing: Number
-  },
   components: {
     ConfirmationWindow
   },
+  props: {
+    indexForEditing: {
+      type: Number,
+      default: null
+    }
+  },
+emits: ['closeEditDialog'],
   data() {
     return {
       newTask: {
@@ -186,12 +198,6 @@ export default {
       chosenItemIndex: null,
       showResetDialog: false
     }
-  },
-  beforeMount() {
-    this.newTask.taskTitle = this.task.taskTitle;
-
-    //это необходимо, чтобы избежать реактивности массивов и сделать просто копию
-    this.newTask.itemList = JSON.parse(JSON.stringify(this.task.itemList));
   },
   computed: {
     emptyItemTitles() {
@@ -212,6 +218,12 @@ export default {
     ...mapState([
       'currentItemId'
     ])
+  },
+  beforeMount() {
+    this.newTask.taskTitle = this.task.taskTitle;
+
+    //это необходимо, чтобы избежать реактивности массивов и сделать просто копию
+    this.newTask.itemList = JSON.parse(JSON.stringify(this.task.itemList));
   },
   methods: {
     ...mapActions([
@@ -238,7 +250,7 @@ export default {
       switch (typeOfChange) {
         case 'changeTitle':
           this.historyOfChanges.arrayOfChanges.push({
-            type: 'changeTitle',
+            type: typeOfChange,
             oldValue: this.newTask.taskTitle,
             newValue: e
           });
@@ -247,7 +259,7 @@ export default {
 
         case 'addItem':
           this.historyOfChanges.arrayOfChanges.push({
-            type: 'addItem'
+            type: typeOfChange
           });
           this.newTask.itemList.push({
             id: this.currentItemId,
@@ -259,7 +271,7 @@ export default {
 
         case 'changeItemTitle':
           this.historyOfChanges.arrayOfChanges.push({
-            type: 'changeItemTitle',
+            type: typeOfChange,
             index: itemIndex,
             oldValue: this.newTask.itemList[itemIndex].itemTitle,
             newValue: e
@@ -269,7 +281,7 @@ export default {
 
         case 'changeItemStatus':
           this.historyOfChanges.arrayOfChanges.push({
-            type: 'changeItemStatus',
+            type: typeOfChange,
             index: itemIndex,
             oldValue: this.newTask.itemList[itemIndex].itemStatus,
             newValue: e
@@ -279,7 +291,7 @@ export default {
 
         case 'deleteItem':
           this.historyOfChanges.arrayOfChanges.push({
-            type: 'deleteItem',
+            type: typeOfChange,
             index: itemIndex,
             oldValue: this.newTask.itemList[itemIndex]
           });

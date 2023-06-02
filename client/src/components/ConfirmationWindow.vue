@@ -1,18 +1,22 @@
 <template>
   <v-card class="pa-3">
-    <v-card-title class="mb-3">Подтвердите действие</v-card-title>
+    <v-card-title class="mb-3">
+      Подтвердите действие
+    </v-card-title>
     <v-card-text>
-      Вы действительно хотите {{action}}?
-      {{description}}
+      Вы действительно хотите {{ action }}?
+      {{ description }}
     </v-card-text>
     <v-container>
       <v-row
           justify="end"
       >
-        <v-btn @click="onClickCancel">Отмена</v-btn>
+        <v-btn @click="onClickCancel">
+          Отмена
+        </v-btn>
         <v-btn
-            @click="onClickAccept"
             class="ml-3"
+            @click="onClickAccept"
         >
           Подтвердить
         </v-btn>
@@ -25,8 +29,12 @@
 export default {
   name: "ConfirmationWindow",
   props: {
-    type: String
+    type : {
+      type: String,
+      default: ''
+    }
   },
+emits: ['cancel', 'accept'],
   computed: {
     action() {
       if (this.type === 'delete') {

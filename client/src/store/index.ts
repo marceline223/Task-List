@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 
 import createPersistedState from 'vuex-persistedstate';
 
-import { Task, Item } from './store-types';
+import { Task } from './store-types';
 import {
     ADD_NEW_TASK,
     DELETE_TASK_BY_INDEX,
