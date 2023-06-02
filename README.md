@@ -8,7 +8,7 @@
 - вызвать
 `node server.mjs`
 или использовать скрипт в package.json 
-`start server`
+`start:server`
 
 
 ### Клиент
@@ -17,4 +17,4 @@
 - вызвать
 `vue-cli-service serve`
 или использовать скрипт в package.json 
-`start client`
+`start:client`
