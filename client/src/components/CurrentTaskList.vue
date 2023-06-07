@@ -20,9 +20,7 @@
             :disabled="!isChosenTaskIndexValid"
             @click="isEditDialogShown = true"
         >
-          <v-icon
-              size="35"
-          >
+          <v-icon size="35">
             mdi-pencil
           </v-icon>
           <v-dialog

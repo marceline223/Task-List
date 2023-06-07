@@ -1,7 +1,5 @@
 <template>
-  <v-card
-      class="pa-3"
-  >
+  <v-card class="pa-3">
     <v-container>
       <v-row
           justify="space-between"
@@ -15,9 +13,7 @@
             class="ma-3 black--text"
             @click="onClickResetChanges"
         >
-          <v-icon
-              size="35"
-          >
+          <v-icon size="35">
             mdi-close-box-outline
           </v-icon>
         </v-btn>
@@ -41,9 +37,7 @@
 
     <v-container>
       <v-row>
-        <div
-            class="ml-4 mt-1"
-        >
+        <div class="ml-4 mt-1">
           Список задач:
         </div>
 
@@ -184,7 +178,7 @@ export default {
       default: null
     }
   },
-emits: ['closeEditDialog'],
+emits: ['close-edit-dialog'],
   data() {
     return {
       newTask: {
@@ -231,7 +225,7 @@ emits: ['closeEditDialog'],
         'increaseItemId'
     ]),
     closeDialog() {
-      this.$emit('closeEditDialog');
+      this.$emit('close-edit-dialog');
     },
     onClickItem(index) {
       this.chosenItemIndex = index;
@@ -240,8 +234,8 @@ emits: ['closeEditDialog'],
       this.setTaskByIndex({
         indexForSetting: this.indexForEditing,
         task: this.newTask
-      })
-      this.$emit('closeEditDialog');
+      });
+      this.$emit('close-edit-dialog');
     },
     onChange(typeOfChange, itemIndex, e) {
       //метод-оболочка для всех типов изменений
