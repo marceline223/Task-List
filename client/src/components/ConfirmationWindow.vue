@@ -37,19 +37,21 @@ export default {
 emits: ['cancel', 'accept'],
   computed: {
     action() {
-      if (this.type === 'delete') {
-        return 'удалить задачу';
-      } else if (this.type === 'reset') {
-        return 'сбросить все изменения';
-      } else {
-        return null;
+      switch(this.type) {
+        case 'delete':
+          return 'удалить задачу';
+        case 'reset':
+          return 'сбросить все изменения';
+        default:
+          return null;
       }
     },
     description() {
-      if (this.type === 'reset') {
-        return 'Все несохраненные изменения будут удалены.';
-      } else {
-        return null;
+      switch (this.type) {
+        case 'reset':
+          return 'Все несохраненные изменения будут удалены.';
+        default:
+          return null;
       }
     }
   },
