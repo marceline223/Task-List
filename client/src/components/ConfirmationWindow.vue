@@ -1,14 +1,25 @@
 <template>
   <v-card class="pa-3">
-    <v-card-title class="mb-3">Подтвердите действие</v-card-title>
+    <v-card-title class="mb-3">
+      Подтвердите действие
+    </v-card-title>
     <v-card-text>
-      Вы действительно хотите {{action}}?
-      {{description}}
+      Вы действительно хотите {{ action }}?
+      {{ description }}
     </v-card-text>
     <v-container>
-      <v-row justify="end">
-        <v-btn @click="onClickCancel">Отмена</v-btn>
-        <v-btn @click="onClickAccept" class="ml-3">Подтвердить</v-btn>
+      <v-row
+          justify="end"
+      >
+        <v-btn @click="onClickCancel">
+          Отмена
+        </v-btn>
+        <v-btn
+            class="ml-3"
+            @click="onClickAccept"
+        >
+          Подтвердить
+        </v-btn>
       </v-row>
     </v-container>
   </v-card>
@@ -18,23 +29,29 @@
 export default {
   name: "ConfirmationWindow",
   props: {
-    type: String
+    type : {
+      type: String,
+      default: ''
+    }
   },
+emits: ['cancel', 'accept'],
   computed: {
     action() {
-      if (this.type === 'delete') {
-        return 'удалить задачу';
-      } else if (this.type === 'reset') {
-        return 'сбросить все изменения';
-      } else {
-        return null;
+      switch(this.type) {
+        case 'delete':
+          return 'удалить задачу';
+        case 'reset':
+          return 'сбросить все изменения';
+        default:
+          return null;
       }
     },
     description() {
-      if (this.type === 'reset') {
-        return 'Все несохраненные изменения будут удалены.';
-      } else {
-        return null;
+      switch (this.type) {
+        case 'reset':
+          return 'Все несохраненные изменения будут удалены.';
+        default:
+          return null;
       }
     }
   },
@@ -48,6 +65,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-</style>

@@ -7,6 +7,8 @@ const typeDefs = `
     addNewTask: Response
     setTaskByIndex: Response
     setStatusOfItem: Response
+    getCurrentItemId: Int
+    getCurrentTaskId: Int
   }
   
   type Response {
@@ -15,11 +17,13 @@ const typeDefs = `
   }
 
   type Task {
+    id: Int
     taskTitle: String
     itemList: [Item]
   }
 
   type Item {
+    id: Int
     itemTitle: String
     itemStatus: Boolean
   }
@@ -50,15 +54,24 @@ const resolvers = {
                 success: true,
                 message: 'The status of item has successfully updated.'
             }
+        },
+        getCurrentItemId: () => {
+            return idItemCounter;
+        },
+        getCurrentTaskId: () => {
+            return idTaskCounter;
         }
     }
 };
 
 import casual from "casual";
 
+let idItemCounter = 0;
+let idTaskCounter = 0;
 
 function generateItem() {
     return {
+        id: idItemCounter++,
         itemTitle: casual.sentence,
         itemStatus: casual.boolean
     }
@@ -67,6 +80,7 @@ function generateItem() {
 function generateTask() {
     let itemsCount = Math.floor(Math.random() * 10);
     return {
+        id: idTaskCounter++,
         taskTitle: casual.title,
         itemList: new Array(itemsCount).fill().map(generateItem)
     }
@@ -74,7 +88,7 @@ function generateTask() {
 
 export const mocks = {
     Query: () => ({
-        getTaskList: () => new Array(6).fill().map(generateTask)
+        getTaskList: () => new Array(6).fill().map(generateTask),
     }),
 };
 
